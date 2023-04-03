@@ -1,0 +1,35 @@
+{
+  "name": "bmi_api",
+  "version": "1.0.0",
+  "description": "be, api, bmi",
+  "main": "sever.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TranNhatQuan/bmi_api.git"
+  },
+  "keywords": [
+    "be",
+    "api",
+    "bmi",
+    "mobile",
+    "web"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TranNhatQuan/bmi_api/issues"
+  },
+  "homepage": "https://github.com/TranNhatQuan/bmi_api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mysql2": "^3.2.0",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.30.0",
+    "sequelize-cli": "^6.6.0"
+  }
+}
