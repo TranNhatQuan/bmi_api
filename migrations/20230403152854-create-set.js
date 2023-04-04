@@ -14,9 +14,7 @@ module.exports = {
         allowNull: false,
       },
       idExercise: {
-        allowNull: false,
-        
-        primaryKey: true,
+        allowNull: false,  
         references: { model: "Exercises", key: "idExercise" },
         type: Sequelize.INTEGER
       }

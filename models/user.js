@@ -11,11 +11,46 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.belongsTo(models.Account,{
+        foreignKey: "idAcc",
+        as: "account",
+      });
+      User.hasMany(models.User_history,{
+        foreignKey: "idUser",
+      });
+      User.hasMany(models.User_recipe,{
+        foreignKey: "idUser",
+      });
+      User.hasMany(models.User_exercise,{
+        foreignKey: "idUser",
+      });
+      User.hasMany(models.Recipe_history,{
+        foreignKey: "idUser",
+      });
     }
   }
   User.init({
-    name: DataTypes.STRING
-  }, {
+    idUser: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+    name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    gender: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    height: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+   
+  },
+  {
     sequelize,
     modelName: 'User',
     timestamps: false,

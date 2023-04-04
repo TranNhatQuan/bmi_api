@@ -11,10 +11,38 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Exercise.hasMany(models.User_exercise,{
+        foreignKey: "idExercise",
+      });
+      Exercise.hasMany(models.Set,{
+        foreignKey: "idExercise",
+      });
     }
   }
   Exercise.init({
-    idExercise: DataTypes.STRING
+    idExercise: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    
+    name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    info: {
+      type: DataTypes.STRING(90),
+      allowNull: true,
+    },
+    calories: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Exercise',

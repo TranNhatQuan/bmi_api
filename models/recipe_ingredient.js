@@ -11,10 +11,37 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Recipe_ingredient.belongsTo(models.Recipe,{
+        foreignKey: "idRecipe",
+      });
+      Recipe_ingredient.belongsTo(models.Ingredient, {
+        foreignKey: "idIngredient",
+      })
     }
   }
   Recipe_ingredient.init({
-    idIngredient: DataTypes.STRING
+    idRecipe: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "Recipe", key: "idRecipe" },
+      type: DataTypes.INTEGER
+    },
+    idIngredient: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "Ingredient", key: "idIngredient" },
+      type: DataTypes.INTEGER
+    },
+    quantity: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    unitName: {
+      allowNull: false,
+      type: DataTypes.STRING(10),
+    }
   }, {
     sequelize,
     modelName: 'Recipe_ingredient',

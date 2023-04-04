@@ -10,11 +10,33 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      User_recipe.belongsTo(models.User, {
+        foreignKey: "idUser",
+      });
+      User_recipe.belongsTo(models.Recipe, {
+        foreignKey: "idRecipe",
+      })
     }
   }
   User_recipe.init({
-    idRecipe: DataTypes.STRING
+    idUser: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "User", key: "idUser" },
+      type: DataTypes.INTEGER
+    },
+    idRecipe: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "Recipe", key: "idRecipe" },
+      type: DataTypes.INTEGER
+    },
+    isLike: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    }
   }, {
     sequelize,
     modelName: 'User_recipe',

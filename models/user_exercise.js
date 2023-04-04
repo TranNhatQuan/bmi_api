@@ -11,10 +11,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User_exercise.belongsTo(models.User, {
+        foreignKey: "idUser",
+      });
+      User_exercise.belongsTo(models.Exercise, {
+        foreignKey: "idExercise",
+      });
     }
   }
   User_exercise.init({
-    idExercise: DataTypes.STRING
+    idUser: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "User", key: "idUser" },
+      type: DataTypes.INTEGER
+    },
+    idExercise: {
+      allowNull: false,
+      
+      primaryKey: true,
+      references: { model: "Exercise", key: "idExercise" },
+      type: DataTypes.INTEGER
+    },
+    isLike: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    }
   }, {
     sequelize,
     modelName: 'User_exercise',

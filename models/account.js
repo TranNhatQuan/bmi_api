@@ -20,12 +20,20 @@ module.exports = (sequelize, DataTypes) => {
   Account.init({
     idAcc: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    mail: { type: DataTypes.STRING(255), allowNull: false },
-    password: { type: DataTypes.INTEGER(6), allowNull: false },
-    role: {type: DataTypes.INTEGER(1), allowNull: false}
+    mail: {
+      type: DataTypes.STRING(255),
+      allowNull: false, 
+      unique: true, 
+      validate:{
+        isEmail: true,
+      } 
+    },
+    password: { type: DataTypes.INTEGER, allowNull: false },
+    role: {type: DataTypes.INTEGER, allowNull: false}
   },
   {
     sequelize,

@@ -11,10 +11,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User_history.belongsTo(models.User, {
+        foreignKey: "idUser",
+      })
     }
   }
   User_history.init({
-    weight: DataTypes.STRING
+    idUser: {
+      allowNull: false,
+      references: { model: "User", key: "idUser" },
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    calories: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    water: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'User_history',

@@ -11,10 +11,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Set.hasMany(models.Menu,{
+        foreignKey: "idSet",
+      });
+      Set.belongsTo(models.Exercise, {
+        foreignKey: "idExercise",
+      })
     }
   }
   Set.init({
-    name: DataTypes.STRING
+    idSet: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    index: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    
   }, {
     sequelize,
     modelName: 'Set',

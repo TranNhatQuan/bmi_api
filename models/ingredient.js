@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const equipment = require('./equipment');
 module.exports = (sequelize, DataTypes) => {
   class Ingredient extends Model {
     /**
@@ -11,10 +12,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Ingredient.hasMany(models.Recipe_ingredient,{
+        foreignKey: "idIngredient"
+      })
     }
   }
   Ingredient.init({
-    name: DataTypes.STRING
+    idIngredient: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    image: {
+      allowNull: false,
+      type: DataTypes.STRING(255),
+    },
   }, {
     sequelize,
     modelName: 'Ingredient',

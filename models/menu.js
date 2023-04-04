@@ -11,10 +11,42 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Menu.hasMany(models.Menu_equipment,{
+        foreignKey: "idMenu",
+      });
+      Menu.belongsTo(models.Set,{
+        foreignKey: "idSet",
+      });
     }
   }
   Menu.init({
-    name: DataTypes.STRING
+    idMenu: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    video: {
+      type: DataTypes.STRING(255),
+      allowNull:false
+    },
+    index: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    time: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    
   }, {
     sequelize,
     modelName: 'Menu',
