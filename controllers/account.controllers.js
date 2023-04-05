@@ -327,18 +327,5 @@ const accessForgotPassword = async (req, res, next) => {
 
 module.exports = {
     // getDetailTaiKhoan,
-    login,
-    loginAdmin,
-    logout,
-    createAccountForCustomer,
-    // information,
-    // create,
-    changePassword,
-    // edit,
-    // logout,
-    forgotPassword,
-    // getforgot,
-    // formlogin,
-    verify,
-    accessForgotPassword,
+    login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword
 };
