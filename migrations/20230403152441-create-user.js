@@ -1,4 +1,7 @@
 'use strict';
+
+const { DataTypes } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -20,6 +23,10 @@ module.exports = {
       height: {
         allowNull: false,
         type: Sequelize.INTEGER,
+      },
+      weight: {
+        allowNull: false,
+        type: DataTypes.INTEGER
       },
       idAcc: {
         allowNull: false,

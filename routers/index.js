@@ -5,7 +5,7 @@ const { recipeRourer } = require("./recipe.routers");
 const { exerciseRouter } = require("./exercise.routers");
 const { ingredientRouter } = require("./ingredient.routers");
 const { equipmentRouter } = require("./equipment.routers");
-const { historyRouter } = require("./history.routers");
+
 
 const rootRouter = express.Router();
 
@@ -15,7 +15,6 @@ rootRouter.use("/recipe", recipeRourer);
 rootRouter.use("/exercise", exerciseRouter);
 rootRouter.use("/ingredient", ingredientRouter);
 rootRouter.use("/equipment", equipmentRouter);
-rootRouter.use("/history", historyRouter);
 
 
 module.exports = {
