@@ -8,8 +8,8 @@ const authorize = (arrType) => async (req, res, next) => {
                 mail
             }
         })
-    if(account.role === arrType) {
-        next();
+        if(arrType.findIndex((ele) => ele === account.role > -1)) {
+            next();
     }else {
         res.status(403).json({message: "Bạn không có quyền sử dụng chức năng này!" });
     }
