@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       } 
     },
     password: { type: DataTypes.STRING, allowNull: false },
-    role: {type: DataTypes.INTEGER, allowNull: false}
+    role: {type: DataTypes.INTEGER, allowNull: false},
+    forgot: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,
