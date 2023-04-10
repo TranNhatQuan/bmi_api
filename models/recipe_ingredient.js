@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       Recipe_ingredient.belongsTo(models.Ingredient, {
         foreignKey: "idIngredient",
       })
+      
     }
   }
   Recipe_ingredient.init({
