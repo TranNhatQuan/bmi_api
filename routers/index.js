@@ -1,5 +1,5 @@
 const express = require("express");
-//const { userRouter } = require("./user.routers");
+const { userRouter } = require("./user.routers");
 const { accountRouter } = require("./account.routers");
 const { recipeRouter } = require("./recipe.routers");
 //const { exerciseRouter } = require("./exercise.routers");
@@ -9,7 +9,7 @@ const { recipeRouter } = require("./recipe.routers");
 
 const rootRouter = express.Router();
 
-//rootRouter.use("/user", userRouter);
+rootRouter.use("/user", userRouter);
 rootRouter.use("/account", accountRouter);
 rootRouter.use("/recipe", recipeRouter);
 //rootRouter.use("/exercise", exerciseRouter);
