@@ -2,7 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const equipment = require('./equipment');
+
+const recipe_ingredient = require('./recipe_ingredient');
 module.exports = (sequelize, DataTypes) => {
   class Ingredient extends Model {
     /**
@@ -15,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       Ingredient.hasMany(models.Recipe_ingredient,{
         foreignKey: "idIngredient"
       })
+    
     }
   }
   Ingredient.init({
