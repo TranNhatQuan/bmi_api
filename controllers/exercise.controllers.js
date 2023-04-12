@@ -2,7 +2,7 @@
 
 // const moment = require('moment'); // require
 const { QueryTypes } = require("sequelize");
-const { Exercise } = require("../models");
+const { Exercise, User_exercise } = require("../models");
 const { raw } = require("body-parser");
 
 // exerciseRouter.get("/", authenticate, getAllexercise);
@@ -26,10 +26,11 @@ const getAllexercise = async (req, res) => {
     }
 }
 const getDetailexercise = async (req, res) => {
-    const id_exercise = req.params;
+    const id_exercise = req.params.id_exercise;;
+    console.log(id_exercise);
     try {
         const details = await Exercise.sequelize.query(
-            'call getDetailexercise(1)',
+            `call getDetailexercise(${id_exercise})`,
             {
                 // replacements:{}
                 type: QueryTypes.SELECT,
@@ -45,7 +46,45 @@ const getDetailexercise = async (req, res) => {
     }
 };
 
+const userLikeEx = async (req, res) => {
+    const { isLike, id_exercise } = req.body;
+    console.log(typeof (req.body));
+    console.log(req.body);
+    try {
+        if (Object.values(isLike) == 1) {
+            await User_exercise.query(
+                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
+                {
+                    type: QueryTypes.UPDATE,
+                    raw: true,
+                }
+            )
+            res.status(200).json({
+                message: 'Sucess'
+            });
+        }
+        else {
+            await User_exercise.query(
+                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
+                {
+                    type: QueryTypes.UPDATE,
+                    raw: true,
+                }
+            )
+            res.status(200).json({
+                message: 'Sucess'
+            });
+        }
 
+        // res.status(200).json({
+        //     message: 'Sucess'
+        // });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
 module.exports = {
-    getAllexercise, getDetailexercise,
+    getAllexercise, getDetailexercise, userLikeEx,
 }
