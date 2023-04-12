@@ -26,8 +26,7 @@ const getAllexercise = async (req, res) => {
     }
 }
 const getDetailexercise = async (req, res) => {
-    const id_exercise = req.params.id_exercise;;
-    console.log(id_exercise);
+    const id_exercise = req.params.id_exercise;
     try {
         const details = await Exercise.sequelize.query(
             `call getDetailexercise(${id_exercise})`,
@@ -46,10 +45,29 @@ const getDetailexercise = async (req, res) => {
     }
 };
 
+const selectExercise = async (req, res) => {
+    const { idUser, idExercise } = req.body;
+    try {
+        await User_exercise.sequelize.query(
+            `insert into user_exercises (idUser, idExercise, isLike) values (${Object.values(idUser)},${Object.values(idExercise)},0)`,
+            {
+                type: QueryTypes.INSERT,
+                raw: true,
+            }
+
+        );
+        res.status(200).json({
+            message: 'success',
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    };
+};
 const userLikeEx = async (req, res) => {
     const { isLike, id_exercise } = req.body;
-    console.log(typeof (req.body));
-    console.log(req.body);
     try {
         if (Object.values(isLike) == 1) {
             await User_exercise.query(
@@ -59,9 +77,9 @@ const userLikeEx = async (req, res) => {
                     raw: true,
                 }
             )
-            res.status(200).json({
-                message: 'Sucess'
-            });
+            // res.status(200).json({
+            //     message: 'Sucess'
+            // });
         }
         else {
             await User_exercise.query(
@@ -71,14 +89,14 @@ const userLikeEx = async (req, res) => {
                     raw: true,
                 }
             )
-            res.status(200).json({
-                message: 'Sucess'
-            });
+            // res.status(200).json({
+            //     message: 'Sucess'
+            // });
         }
 
-        // res.status(200).json({
-        //     message: 'Sucess'
-        // });
+        res.status(200).json({
+            message: 'Sucess'
+        });
     } catch (error) {
         res.status(500).json({
             message: 'Error'
@@ -86,5 +104,5 @@ const userLikeEx = async (req, res) => {
     }
 };
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx,
+    getAllexercise, getDetailexercise, userLikeEx, selectExercise,
 }

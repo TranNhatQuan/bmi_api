@@ -8,7 +8,7 @@ const express = require("express");
 const { exercise } = require("../models")
 const { authenticate } = require("../middlewares/auth/authenticate.js")
 const { authorize } = require("../middlewares/auth/authorize.js")
-const { getAllexercise, getDetailexercise, createexercise, updateexercise, deleteexercise, userLikeEx, completeExercise }
+const { getAllexercise, getDetailexercise, createexercise, updateexercise, deleteexercise, userLikeEx, completeExercise, selectExercise }
     = require("../controllers/exercise.controllers");
 const { checkCreateexercise, checkexerciseValue } = require("../middlewares/validates/checkCreate.js");
 const exerciseRouter = express.Router();
@@ -17,8 +17,10 @@ exerciseRouter.get("/page", getAllexercise);
 // exerciseRouter.get("/", authenticate, getAllexercise);
 // // lay tat thong tin cua 1 bai tap gom cac set, rep, equipment theo 
 exerciseRouter.get("/detail/:id_exercise", getDetailexercise);
+//Them bai tap do nguoi dung chon
+exerciseRouter.post("/select", selectExercise);
 // //Nguoi dung an like 1 exercise thi luu ve bang user_exercise voi isLike 1
-// exercise.put("/like", authenticate, userLikeEx)
+exerciseRouter.put("/like/", userLikeEx);
 // //Nguoi dung hoan thanh 1 bai tap thi tru calories cua nguoi dung trong history cua ngay do
 // exercise.put("/check", authenticate, completeExercise)
 // //tam choi chua lam cac phan co auth 1
