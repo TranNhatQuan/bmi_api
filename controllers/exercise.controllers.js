@@ -49,7 +49,7 @@ const selectExercise = async (req, res) => {
     const { idUser, idExercise } = req.body;
     try {
         await User_exercise.sequelize.query(
-            `insert into user_exercises (idUser, idExercise, isLike) values (${Object.values(idUser)},${Object.values(idExercise)},0)`,
+            `call selectExercise(${idUser},${idExercise})`,
             {
                 type: QueryTypes.INSERT,
                 raw: true,
@@ -67,11 +67,11 @@ const selectExercise = async (req, res) => {
     };
 };
 const userLikeEx = async (req, res) => {
-    const { isLike, id_exercise } = req.body;
+    const { isLike, id_exercise, id_user } = req.body;
     try {
         if (Object.values(isLike) == 1) {
-            await User_exercise.query(
-                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
+            await User_exercise.sequelize.query(
+                `update user_exercises set isLike = 1 where idExercise = ${Object.values(id_exercise)} and idUser = ${Object.values(id_user)}`,
                 {
                     type: QueryTypes.UPDATE,
                     raw: true,
@@ -82,8 +82,8 @@ const userLikeEx = async (req, res) => {
             // });
         }
         else {
-            await User_exercise.query(
-                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
+            await User_exercise.sequelize.query(
+                `update user_exercises set isLike = 0 where idExercise = ${Object.values(id_exercise)} and idUser = ${Object.values(id_user)}`,
                 {
                     type: QueryTypes.UPDATE,
                     raw: true,
