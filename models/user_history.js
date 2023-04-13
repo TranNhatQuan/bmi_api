@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       //YYYY-MM-DD
       type: DataTypes.DATEONLY,
       allowNull: false,
+      primaryKey: true,
     },
     weight: {
       type: DataTypes.INTEGER,
