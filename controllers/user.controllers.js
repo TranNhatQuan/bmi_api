@@ -1,4 +1,4 @@
-const { Recipe,User_history} = require("../models");
+const { Recipe,User_history,Recipe_history} = require("../models");
 const moment = require('moment'); // require
 
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
@@ -52,7 +52,30 @@ const getAllhistory = async (req,res) =>{
     }
 };
 
+const getRecipeHistory = async (req,res) =>{
+    const date = req.params;
+    const d = date['date'];
+    try {
+        const recipe_his = await Recipe_history.sequelize.query(
+            `call recipe_history('${d}',${user_id})`,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+            }
+        );
+        res.status(200).json(recipe_his);
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
+const mail ="tri1@gmail.com"
+const getInfoUser = async (req, res) =>{
+
+};
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,
 };
