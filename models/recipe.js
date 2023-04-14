@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const recipe_ingredient = require('./recipe_ingredient');
 module.exports = (sequelize, DataTypes) => {
   class Recipe extends Model {
     /**
@@ -19,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Recipe.hasMany(models.Recipe_history, {
         foreignKey: "idRecipe",
       });
+   
       // define association here
     }
   }

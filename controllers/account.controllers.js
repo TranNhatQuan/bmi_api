@@ -85,7 +85,7 @@ const changePassword = async (req, res) => {
     try {
         const accountUpdate = await Account.findOne({
             where: {
-                username: req.username,
+                mail: req.mail,
             },
         });
         const isAuth = bcrypt.compareSync(oldPassword, accountUpdate.password);
@@ -100,9 +100,7 @@ const changePassword = async (req, res) => {
                     const salt = bcrypt.genSaltSync(10);
                     //mã hoá salt + password
                     const hashPassword = bcrypt.hashSync(newPassword, salt);
-                    if (accountUpdate.active == 0) {
-                        accountUpdate.active = 1;
-                    }
+                   
                     accountUpdate.password = hashPassword;
                     await accountUpdate.save();
                     res.status(200).json({
@@ -132,7 +130,7 @@ const logout = async (req, res, next) => {
 };
 
 const forgotPassword = async (req, res) => {
-    const { username } = req.body;
+    const { mail } = req.body;
     try {
         const randomID = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
         const isExist = await Account.findOne({
@@ -145,22 +143,14 @@ const forgotPassword = async (req, res) => {
                 message: `Có lỗi xảy ra vui lòng thử lại!`,
             });
         } else {
-            const account = await Account.sequelize.query(
-                "SELECT CU.email FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
-                {
-                    type: QueryTypes.SELECT,
-                    replacements: {
-                        username: username,
-                    },
-                }
-            );
+            
             await Account.sequelize.query(
-                "UPDATE accounts SET forgot = :randomID WHERE username = :username",
+                "UPDATE accounts SET forgot = :randomID WHERE mail = :mail",
                 {
                     type: QueryTypes.UPDATE,
                     replacements: {
                         randomID: randomID,
-                        username: username,
+                        mail: mail,
                     },
                 }
             );
@@ -176,17 +166,14 @@ const forgotPassword = async (req, res) => {
             // send mail with defined transport object
             await transporter.sendMail({
                 from: "n19dccn107@student.ptithcm.edu.vn", // sender address
-                to: `${account[0].email}`, // list of receivers
+                to: `${mail}`, // list of receivers
                 subject: "FORGOT PASSWORD", // Subject line
                 text: "FORGOT PASSWORD", // plain text body
                 html: `Mã xác nhận của bạn là: ${randomID}`, // html body
             });
-            var s2 = account[0].email;
-            var s1 = s2.substring(0, s2.length - 15);
-            var s3 = s2.substring(s2.length - 15, s2.length);
-            var email = s1 + s3.replace(/\S/gi, "*");
+           
             res.status(200).json({
-                message: `Mã xác minh đã được gửi về email: ${email} vui lòng kiểm tra hòm thư!`,
+                message: `Mã xác minh đã được gửi về email: ${mail} vui lòng kiểm tra hòm thư!`,
             });
         }
     } catch (error) {
@@ -254,11 +241,11 @@ const forgotPassword = async (req, res) => {
 // };
 
 const verify = async (req, res, next) => {
-    const { verifyID, username } = req.body;
+    const { verifyID, mail } = req.body;
     const account = await Account.findOne({
         where: {
             forgot: verifyID,
-            username
+            mail
         },
         raw: true,
     });
@@ -276,7 +263,7 @@ const verify = async (req, res, next) => {
 };
 
 const accessForgotPassword = async (req, res, next) => {
-    const { username, password, repeatPassword } = req.body;
+    const { mail, password, repeatPassword } = req.body;
     if (password != repeatPassword) {
         res.status(400).json({
             message: `Mật khẩu lặp lại không chính xác!`,
@@ -288,14 +275,12 @@ const accessForgotPassword = async (req, res, next) => {
         try {
             const accountUpdate = await Account.findOne({
                 where: {
-                    username,
+                    mail,
                 },
             });
             accountUpdate.password = hashPassword;
             accountUpdate.forgot = 0;
-            if (accountUpdate.active == 0) {
-                accountUpdate.active = 1;
-            }
+           
             await accountUpdate.save();
             res.status(200).json({
                 message: `Lấy lại mật khẩu thành công!`,

@@ -103,6 +103,26 @@ const userLikeEx = async (req, res) => {
         });
     }
 };
+
+const completeExercise = async (req, res) => {
+    const { id_user, id_exercise } = req.body;
+    try {
+        await User_history.sequelize.query(
+            `call completeExercise(${Object.values(id_user)},${Object.value(id_exercise)})`,
+            {
+                type: QueryTypes.UPDATE,
+                raw: true,
+            }
+        )
+        res.status(200).json({
+            message: 'Sucess'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, selectExercise,
+    getAllexercise, getDetailexercise, userLikeEx, selectExercise, completeExercise,
 }
