@@ -26,7 +26,8 @@ const getAllexercise = async (req, res) => {
     }
 }
 const getDetailexercise = async (req, res) => {
-    const id_exercise = req.params.id_exercise;
+    const id_exercise = req.params.id_exercise;;
+    console.log(id_exercise);
     try {
         const details = await Exercise.sequelize.query(
             `call getDetailexercise(${id_exercise})`,
@@ -45,78 +46,39 @@ const getDetailexercise = async (req, res) => {
     }
 };
 
-const selectExercise = async (req, res) => {
-    const { idUser, idExercise } = req.body;
-    try {
-        await User_exercise.sequelize.query(
-            `call selectExercise(${idUser},${idExercise})`,
-            {
-                type: QueryTypes.INSERT,
-                raw: true,
-            }
-
-        );
-        res.status(200).json({
-            message: 'success',
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            message: 'Error'
-        });
-    };
-};
 const userLikeEx = async (req, res) => {
-    const { isLike, id_exercise, id_user } = req.body;
+    const { isLike, id_exercise } = req.body;
+    console.log(typeof (req.body));
+    console.log(req.body);
     try {
         if (Object.values(isLike) == 1) {
-            await User_exercise.sequelize.query(
-                `update user_exercises set isLike = 1 where idExercise = ${Object.values(id_exercise)} and idUser = ${Object.values(id_user)}`,
+            await User_exercise.query(
+                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
                 {
                     type: QueryTypes.UPDATE,
                     raw: true,
                 }
             )
-            // res.status(200).json({
-            //     message: 'Sucess'
-            // });
+            res.status(200).json({
+                message: 'Sucess'
+            });
         }
         else {
-            await User_exercise.sequelize.query(
-                `update user_exercises set isLike = 0 where idExercise = ${Object.values(id_exercise)} and idUser = ${Object.values(id_user)}`,
+            await User_exercise.query(
+                `update user_exercise set isLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)}`,
                 {
                     type: QueryTypes.UPDATE,
                     raw: true,
                 }
             )
-            // res.status(200).json({
-            //     message: 'Sucess'
-            // });
+            res.status(200).json({
+                message: 'Sucess'
+            });
         }
 
-        res.status(200).json({
-            message: 'Sucess'
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error'
-        });
-    }
-};
-
-const completeExercise = async (req, res) => {
-    const { id_user, id_exercise } = req.body;
-    try {
-        await User_history.sequelize.query(
-            `call completeExercise(${Object.values(id_user)},${Object.value(id_exercise)})`,
-            {
-                type: QueryTypes.UPDATE,
-                raw: true,
-            }
-        )
-        res.status(200).json({
-            message: 'Sucess'
-        });
+        // res.status(200).json({
+        //     message: 'Sucess'
+        // });
     } catch (error) {
         res.status(500).json({
             message: 'Error'
@@ -124,5 +86,5 @@ const completeExercise = async (req, res) => {
     }
 };
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, selectExercise, completeExercise,
+    getAllexercise, getDetailexercise, userLikeEx,
 }
