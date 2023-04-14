@@ -82,6 +82,8 @@ const login = async (req, res) => {
 
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword, repeatPassword } = req.body;
+    console.log("test")
+    console.log(req.mail)
     try {
         const accountUpdate = await Account.findOne({
             where: {
