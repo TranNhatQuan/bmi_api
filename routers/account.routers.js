@@ -1,7 +1,7 @@
 const express = require("express");
 const {Account} = require("../models")
 const {login, logout, createAccountForCustomer, changePassword, forgotPassword, loginAdmin, verify, accessForgotPassword} = require("../controllers/account.controllers");
-const { checkExistAccount, checkExistAccount1 } = require("../middlewares/validates/checkExist");
+const { checkExistAccount } = require("../middlewares/validates/checkExist");
 const { checkCreateAccount } = require("../middlewares/validates/checkCreate");
 const {authenticate} = require("../middlewares/auth/authenticate.js")
 const accountRouter = express.Router();
