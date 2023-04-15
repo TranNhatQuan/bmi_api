@@ -1,7 +1,8 @@
-const {Recipe, Recipe_ingredient, Ingredient, User_recipe, User, Account} = require("../models")
+const { Recipe, Recipe_ingredient, Ingredient, User_recipe, User, Account } = require("../models")
 const { QueryTypes } = require("sequelize");
 
 const getInfoRecipe = async (req, res) => {
+
     const { idRecipe } = req.params;
     
     try {
@@ -145,3 +146,5 @@ const getInfoRecipe = async (req, res) => {
     getInfoRecipe, getFavorite, getAllRecipe ,getRecipeByTitle
    
   };
+
+ 
