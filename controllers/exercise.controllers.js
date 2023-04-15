@@ -26,8 +26,9 @@ const getAllexercise = async (req, res) => {
     }
 }
 const getDetailexercise = async (req, res) => {
-    const id_exercise = req.params.id_exercise;;
+    const { id_exercise } = req.params;
     console.log(id_exercise);
+    console.log(Object.values(id_exercise));
     try {
         const details = await Exercise.sequelize.query(
             `call getDetailexercise(${id_exercise})`,
@@ -46,10 +47,15 @@ const getDetailexercise = async (req, res) => {
     }
 };
 const selectExercise = async (req, res) => {
-    const { idUser, idExercise } = req.body;
+    const { idExercise } = req.body;
     try {
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        })
+        console.log(acc.User.idUser);
         await User_exercise.sequelize.query(
-            `call selectExercise(${idUser},${idExercise})`,
+            `call selectExercise(${acc.User.idUser},${idExercise})`,
             {
                 type: QueryTypes.INSERT,
                 raw: true,
