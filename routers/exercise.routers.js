@@ -18,7 +18,7 @@ exerciseRouter.get("/page", authenticate, getAllexercise);
 // // lay tat thong tin cua 1 bai tap gom cac set, rep, equipment theo 
 exerciseRouter.get("/detail/:id_exercise", authenticate, getDetailexercise);
 //Them bai tap do nguoi dung chon
-exerciseRouter.post("/select", authenticate, selectExercise);
+// exerciseRouter.post("/select/:id_exercise", authenticate, selectExercise);
 // //Nguoi dung an like 1 exercise thi luu ve bang user_exercise voi isLike 1
 exerciseRouter.put("/like/", authenticate, userLikeEx);
 //Nguoi dung hoan thanh 1 bai tap thi tru calories cua nguoi dung trong history cua ngay do

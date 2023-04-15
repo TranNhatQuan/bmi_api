@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      
+
       name: {
         type: Sequelize.STRING(45),
         allowNull: false,
@@ -25,6 +25,10 @@ module.exports = {
       image: {
         type: Sequelize.STRING(255),
         allowNull: false,
+      },
+      title: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       }
     });
   },
