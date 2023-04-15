@@ -8,10 +8,10 @@ const authenticate = (req, res, next) => {
       try {
         const data = jwt.verify(token, "hehehe");
         req.mail = data.mail;
-        console.log(data.mail)
         
-        console.log("test");
-        console.log(req.mail)
+        
+        
+
         return next();
       } catch {
         return res.status(403).json({message: "Vui lòng đăng nhập!" });
