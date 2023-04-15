@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    calories: {
+    calories_in: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    calories_out: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
