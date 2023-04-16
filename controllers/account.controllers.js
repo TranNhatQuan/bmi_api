@@ -23,13 +23,13 @@ const createAccountForCustomer = async (req, res) => {
             name,
             mail,
             gender,
-            height,
-            weight,
+            
         });
         const newHistory = await User_history.create({
             idUser: newCustomer.idUser,
             date: moment().format("YYYY-MM-DD"),
-            weight: newCustomer.weight,
+            weight: weight,
+            height: height,
             water: 0,
             calories_in: 0,
             calories_out: 0,
