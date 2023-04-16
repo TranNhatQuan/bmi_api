@@ -27,12 +27,17 @@ module.exports = (sequelize, DataTypes) => {
       //YYYY-MM-DD
       type: DataTypes.DATEONLY,
       allowNull: false,
+      primaryKey: true,
     },
     weight: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    calories: {
+    calories_in: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    calories_out: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
