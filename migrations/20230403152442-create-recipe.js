@@ -34,10 +34,12 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      title: {
+      idType: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "Types", key: "idType" },
       },
+      
       image: {
         type: Sequelize.STRING(255),
         allowNull: false,
