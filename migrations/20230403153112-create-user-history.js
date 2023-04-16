@@ -17,7 +17,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      calories: {
+      height: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      calories_in: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      calories_out: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

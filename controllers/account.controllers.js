@@ -23,17 +23,18 @@ const createAccountForCustomer = async (req, res) => {
             name,
             mail,
             gender,
-            height,
-            weight,
+            
         });
         const newHistory = await User_history.create({
             idUser: newCustomer.idUser,
             date: moment().format("YYYY-MM-DD"),
-            weight: newCustomer.weight,
+            weight: weight,
+            height: height,
             water: 0,
-            calories: 0,
+            calories_in: 0,
+            calories_out: 0,
         });
-        
+
         res.status(200).json({
             message: "Tạo tài khoản thành công!",
         });
@@ -47,7 +48,7 @@ const createAccountForCustomer = async (req, res) => {
 //tam thoi chua co
 
 const loginAdmin = async (req, res) => {
-  
+
 };
 
 const login = async (req, res) => {
@@ -72,8 +73,8 @@ const login = async (req, res) => {
             .json({
                 message: "Đăng nhập thành công!",
                 token,
-                
-                expireTime: 60*60*60,
+
+                expireTime: 60 * 60 * 60,
             });
     } else {
         res.status(400).json({ message: "Sai thông tin đăng nhập!" });
@@ -82,6 +83,8 @@ const login = async (req, res) => {
 
 const changePassword = async (req, res) => {
     const { oldPassword, newPassword, repeatPassword } = req.body;
+    console.log("test")
+    console.log(req.mail)
     try {
         const accountUpdate = await Account.findOne({
             where: {
@@ -100,7 +103,7 @@ const changePassword = async (req, res) => {
                     const salt = bcrypt.genSaltSync(10);
                     //mã hoá salt + password
                     const hashPassword = bcrypt.hashSync(newPassword, salt);
-                   
+
                     accountUpdate.password = hashPassword;
                     await accountUpdate.save();
                     res.status(200).json({
@@ -143,7 +146,7 @@ const forgotPassword = async (req, res) => {
                 message: `Có lỗi xảy ra vui lòng thử lại!`,
             });
         } else {
-            
+
             await Account.sequelize.query(
                 "UPDATE accounts SET forgot = :randomID WHERE mail = :mail",
                 {
@@ -171,7 +174,7 @@ const forgotPassword = async (req, res) => {
                 text: "FORGOT PASSWORD", // plain text body
                 html: `Mã xác nhận của bạn là: ${randomID}`, // html body
             });
-           
+
             res.status(200).json({
                 message: `Mã xác minh đã được gửi về email: ${mail} vui lòng kiểm tra hòm thư!`,
             });
@@ -280,7 +283,7 @@ const accessForgotPassword = async (req, res, next) => {
             });
             accountUpdate.password = hashPassword;
             accountUpdate.forgot = 0;
-           
+
             await accountUpdate.save();
             res.status(200).json({
                 message: `Lấy lại mật khẩu thành công!`,
