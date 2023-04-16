@@ -10,13 +10,13 @@ const userRouter = express.Router();
 // //lay tat ca history cua user do tu qua khu den hien tai, khong lay tuong lai
 userRouter.get("/history/", getAllhistory);
 // //lay history weight, water, calo theo ngay cua user
-userRouter.get("/history/:date", getHistory);
+userRouter.get("/history/:date",authenticate, getHistory);
 // //lay lich su an uong theo ngay cua user do
-userRouter.get("/menu/:date", getRecipeHistory)
+userRouter.get("/menu/edit/:date",authenticate, getRecipeHistory)
 // //sua do an theo ngay cua user
-// userRouter.put("/menu/edit/:date", authenticate, editMenuUser)
+userRouter.put("/menu/edit/:date",authenticate, editMenuUser)
 // //lay name, gender, height va weight, truy van theo mail duoc luu trong token
-userRouter.get("/", getInfoUser)
+userRouter.get("/",authenticate, getInfoUser)
 // userRouter.put("/edit",authenticate, editUser)
 module.exports = {
     userRouter,

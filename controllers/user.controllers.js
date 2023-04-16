@@ -1,4 +1,4 @@
-const { Recipe,User_history,Recipe_history} = require("../models");
+const { Recipe,User_history,Recipe_history,Account,User} = require("../models");
 const moment = require('moment'); // require
 
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
@@ -37,8 +37,14 @@ const getHistory = async (req,res) =>{
 const getAllhistory = async (req,res) =>{
     try {
         // const exercise1 = await Exercise.findAll();
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+          });
+        console.log(acc.User.idUser);
         const user_h = await User_history.sequelize.query(
-            "select * from user_histories where user_histories.date < CURRENT_DATE()",
+            `select * from user_histories where user_histories.date <= CURRENT_DATE() 
+            and user_histories.idUser=1`,
             {
                 type: QueryTypes.SELECT,
                 raw: true,
@@ -75,7 +81,29 @@ const mail ="tri1@gmail.com"
 const getInfoUser = async (req, res) =>{
 
 };
+
+const editMenuUser = async (req,res) =>{
+    const date = req.params;
+    const d = date['date'];
+    const { id_rec, title } = req.body;
+    try {
+        await Recipe_history.sequelize.query(
+            `call edit_recipe('${d}',${user_id},${Object.values(id_rec)},${Object.values(title)})`,
+            {
+                type: QueryTypes.UPDATE,
+                raw: true,
+            }
+        );
+        res.status(200).json({
+            message: 'Success'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,
 };
