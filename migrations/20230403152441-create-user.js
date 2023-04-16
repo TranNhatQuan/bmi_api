@@ -25,6 +25,10 @@ module.exports = {
         allowNull: false,
         references: { model: "Accounts", key: "idAcc" },
         type: Sequelize.INTEGER
+      },
+      isShare: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       }
     });
   },

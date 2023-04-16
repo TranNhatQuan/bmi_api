@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATEONLY,
       //YYYY-MM-DD
     },
-    title: {
+    filter: {
       allowNull: false,
       type: DataTypes.INTEGER,
     }

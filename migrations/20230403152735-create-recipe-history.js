@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.DATEONLY,
         //YYYY-MM-DD
       },
-      title: {
+      filter: {
         allowNull: false,
         type: Sequelize.INTEGER,
       }
