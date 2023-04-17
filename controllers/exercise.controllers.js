@@ -46,7 +46,6 @@ const getDetailexercise = async (req, res) => {
         });
     }
 };
-
 const userLikeEx = async (req, res) => {
     const { isLike, id_exercise } = req.body;
     try {
@@ -55,39 +54,25 @@ const userLikeEx = async (req, res) => {
             include: User
         })
         console.log(acc.User.idUser, Object.values(isLike), Object.values(id_exercise));
-        // if (Object.values(isLike) == 1) {
-        //     console.log('true')
-        //     await User_exercise.query(
-        //         `update user_exercises set isLike=1 where idExercise='${Object.values(id_exercise)}' and idUser='${acc.User.id_user}'; `,
-        //         {
-        //             type: QueryTypes.UPDATE,
-        //             raw: true,
-        //         });
-        //     res.status(200).json({
-        //         message: 'Sucess'
-        //     });
-        // }
-        // else {
-        //     await User_exercise.query(
-        //         `update user_exercise set sisLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)} and idUser = ${acc.User.idUser}`,
-        //         {
-        //             type: QueryTypes.UPDATE,
-        //             raw: true,
-        //         }
-        //     )
-        //     res.status(200).json({
-        //         message: 'Sucess'
-        //     });
-        // }
-        await User_exercise.query(
-            `update user_exercises set isLike='${Object.values(isLike)}' where idExercise='${Object.values(id_exercise)}' and idUser='${acc.User.id_user}'; `,
-            {
-                type: QueryTypes.UPDATE,
-                raw: true,
-            });
-        res.status(200).json({
-            message: 'Sucess'
-        });
+
+        if (Object.values(isLike) == 1) (
+            User_history.update({ isLike: 1 }, {
+                where: {
+                    idExercise: Object.values(id_exercise),
+                    idUser: acc.User.idUser
+                }
+            })
+        )
+        else (
+            User_history.update({ isLike: 0 }, {
+                where: {
+                    idExercise: Object.values(id_exercise),
+                    idUser: acc.User.idUser
+                }
+            })
+        )
+
+
     } catch (error) {
         res.status(500).json({
             message: 'Error'
@@ -96,14 +81,25 @@ const userLikeEx = async (req, res) => {
 };
 
 const completeExercise = async (req, res) => {
-    const { id_user, id_exercise } = req.body;
+    const { id_exercise } = req.body;
     try {
-        await User_history.sequelize.query(
-            `call completeExercise(${Object.values(id_user)}, ${Object.value(id_exercise)})`,
-            {
-                type: QueryTypes.UPDATE,
-                raw: true,
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        })
+
+        const calo = await Exercise.findOne({ attributes: ['calories'] }, {
+            where: {
+                idExercise: Object.values(id_exercise),
             }
+        }
+        )
+        await User_history.update({ calories_out: calories_out + calo.dataValues() }, {
+            where: {
+                idUser: acc.User.idUser,
+            }
+        }
+
         )
         res.status(200).json({
             message: 'Sucess'
@@ -118,5 +114,5 @@ const completeExercise = async (req, res) => {
     }
 };
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, completeExercise,
+    getAllexercise, getDetailexercise, userLikeEx, selectExercise, completeExercise,
 }
