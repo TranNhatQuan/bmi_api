@@ -21,7 +21,7 @@ const getAllexercise = async (req, res) => {
         res.status(200).json(exercise1);
     } catch (error) {
         res.status(500).json({
-            message: 'Error'
+            message: 'False'
         });
     }
 }
@@ -31,7 +31,9 @@ const getDetailexercise = async (req, res) => {
     console.log(Object.values(id_exercise));
     try {
         const details = await Exercise.sequelize.query(
-            `call getDetailexercise(${id_exercise})`,
+            `select e.name, s.index, m.name as menu_name, m.image as menu_image, m.video as menu_video, eq.name as equipment_name
+            from exercises as e, sets as s, menus as m, equipment as eq, menu_equipments as me
+            where e.idExercise = ${id_exercise} and s.idSet = idExercise and s.idSet = m.idMenu and m.idMenu = me.idMenu and me.idMenu = eq.idEquipment;`,
             {
                 // replacements:{}
                 type: QueryTypes.SELECT,
@@ -42,7 +44,7 @@ const getDetailexercise = async (req, res) => {
         res.status(200).json(details);
     } catch (error) {
         res.status(500).json({
-            message: 'Error'
+            message: 'False'
         });
     }
 };
@@ -75,7 +77,7 @@ const userLikeEx = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            message: 'Error'
+            message: 'False'
         });
     }
 };
@@ -102,14 +104,14 @@ const completeExercise = async (req, res) => {
 
         )
         res.status(200).json({
-            message: 'Sucess'
+            message: 'True'
         });
         // res.status(200).json({
         //     message: 'Sucess'
         // });
     } catch (error) {
         res.status(500).json({
-            message: 'Error'
+            message: 'False'
         })
     }
 };
