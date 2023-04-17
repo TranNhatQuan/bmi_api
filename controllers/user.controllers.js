@@ -1,18 +1,18 @@
-const { Recipe,User_history,Recipe_history,Account,User} = require("../models");
+const { Recipe, User_history, Recipe_history, Account, User } = require("../models");
 const moment = require('moment'); // require
 
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
 
 // const  getRecommend = async (req,res) =>{
-    // function convertToJSONDate(strDate){
-    //     var splitted = strDate.split(".");
-    //     var dt = new Date(splitted[2],splitted[0],splitted[1]);
-    //     var newDate = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds(), dt.getMilliseconds()));
-    //     return '/Date(' + newDate.getTime() + ')/';
-    //   }
+// function convertToJSONDate(strDate){
+//     var splitted = strDate.split(".");
+//     var dt = new Date(splitted[2],splitted[0],splitted[1]);
+//     var newDate = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds(), dt.getMilliseconds()));
+//     return '/Date(' + newDate.getTime() + ')/';
+//   }
 // };
-const user_id=1;
-const getHistory = async (req,res) =>{
+const user_id = 1;
+const getHistory = async (req, res) => {
     const date = req.params;
     const d = date['date']
     // console.log(d);
@@ -22,7 +22,7 @@ const getHistory = async (req,res) =>{
     try {
         const u_history = await User_history.findAll({
             where: {
-                date:d, idUser:user_id,
+                date: d, idUser: user_id,
             },
         });
         res.status(200).json(u_history);
@@ -34,13 +34,13 @@ const getHistory = async (req,res) =>{
     }
 };
 
-const getAllhistory = async (req,res) =>{
+const getAllhistory = async (req, res) => {
     try {
         // const exercise1 = await Exercise.findAll();
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
-          });
+        });
         console.log(acc.User.idUser);
         const user_h = await User_history.sequelize.query(
             `select * from user_histories where user_histories.date <= CURRENT_DATE() 
@@ -58,7 +58,7 @@ const getAllhistory = async (req,res) =>{
     }
 };
 
-const getRecipeHistory = async (req,res) =>{
+const getRecipeHistory = async (req, res) => {
     const date = req.params;
     const d = date['date'];
     try {
@@ -77,12 +77,12 @@ const getRecipeHistory = async (req,res) =>{
         });
     }
 };
-const mail ="tri1@gmail.com"
-const getInfoUser = async (req, res) =>{
+const mail = "tri1@gmail.com"
+const getInfoUser = async (req, res) => {
 
 };
 
-const editMenuUser = async (req,res) =>{
+const editMenuUser = async (req, res) => {
     const date = req.params;
     const d = date['date'];
     const { id_rec, title } = req.body;
@@ -105,5 +105,5 @@ const editMenuUser = async (req,res) =>{
 };
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,
+    getAllhistory, getHistory, getRecipeHistory, getInfoUser, editMenuUser,
 };

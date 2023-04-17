@@ -46,39 +46,7 @@ const getDetailexercise = async (req, res) => {
         });
     }
 };
-const selectExercise = async (req, res) => {
-    // const { id_exercise } = req.params;
-    // console.log(id_exercise);
-    // try {
-    //     console.log(req.mail);
-    //     const acc = await Account.findOne({
-    //         where: { mail: req.mail },
-    //         include: User
-    //     })
 
-    //     // const id_user = await User.findOne({
-    //     //     where: { idAcc: acc.idAcc },
-    //     //     include: Account
-    //     // })
-    //     console.log(acc.User.idUser);
-    //     await User_exercise.sequelize.query(
-    //         `call selectExercise(${acc.User.idUser},${id_exercise})`,
-    //         {
-    //             type: QueryTypes.INSERT,
-    //             raw: true,
-    //         }
-
-    //     );
-    //     res.status(200).json({
-    //         message: 'success',
-    //     });
-    // }
-    // catch (error) {
-    //     res.status(500).json({
-    //         message: 'Error'
-    //     });
-    // };
-};
 const userLikeEx = async (req, res) => {
     const { isLike, id_exercise } = req.body;
     try {
@@ -150,5 +118,5 @@ const completeExercise = async (req, res) => {
     }
 };
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, selectExercise, completeExercise,
+    getAllexercise, getDetailexercise, userLikeEx, completeExercise,
 }
