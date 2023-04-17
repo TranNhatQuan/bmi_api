@@ -11,6 +11,7 @@ module.exports = {
       },
       date: {
         type: Sequelize.DATEONLY,
+        primaryKey: true,
         allowNull: false,
       },
       weight: {
