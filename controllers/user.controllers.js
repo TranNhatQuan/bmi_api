@@ -1,4 +1,4 @@
-const { Recipe,User_history,Recipe_history,Account,User} = require("../models");
+const { Recipe,User_history,Recipe_history,Account,User,Sequelize} = require("../models");
 const moment = require('moment'); // require
 
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
@@ -11,18 +11,17 @@ const { QueryTypes, DATEONLY, DATE } = require("sequelize");
     //     return '/Date(' + newDate.getTime() + ')/';
     //   }
 // };
-const user_id=1;
 const getHistory = async (req,res) =>{
     const date = req.params;
     const d = date['date']
-    // console.log(d);
-    // console.log(typeof(d));
-    // const da= new DATEONLY(date);
-    // console.log(da);
+    const acc = await Account.findOne({
+        where: { mail: req.mail },
+        include: User
+    });
     try {
         const u_history = await User_history.findAll({
             where: {
-                date:d, idUser:user_id,
+                date:d, idUser:acc.User.idUser,
             },
         });
         res.status(200).json(u_history);
@@ -40,11 +39,11 @@ const getAllhistory = async (req,res) =>{
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
-          });
+        });
         console.log(acc.User.idUser);
         const user_h = await User_history.sequelize.query(
             `select * from user_histories where user_histories.date <= CURRENT_DATE() 
-            and user_histories.idUser=1`,
+            and user_histories.idUser=${acc.User.idUser}`,
             {
                 type: QueryTypes.SELECT,
                 raw: true,
@@ -61,9 +60,16 @@ const getAllhistory = async (req,res) =>{
 const getRecipeHistory = async (req,res) =>{
     const date = req.params;
     const d = date['date'];
+    const acc = await Account.findOne({
+        where: { mail: req.mail },
+        include: User
+    });
     try {
         const recipe_his = await Recipe_history.sequelize.query(
-            `call recipe_history('${d}',${user_id})`,
+            `select recipe_histories.idUser , recipe_histories.date , recipes.*
+            from recipe_histories 
+            inner join recipes on recipe_histories.idRecipe = recipes.idRecipe
+            where recipe_histories.idUser = ${acc.User.idUser} and recipe_histories.date = '${d}'`,
             {
                 type: QueryTypes.SELECT,
                 raw: true,
@@ -77,7 +83,6 @@ const getRecipeHistory = async (req,res) =>{
         });
     }
 };
-const mail ="tri1@gmail.com"
 const getInfoUser = async (req, res) =>{
 
 };

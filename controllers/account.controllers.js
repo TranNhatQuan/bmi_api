@@ -17,13 +17,14 @@ const createAccountForCustomer = async (req, res) => {
             mail,
             role: 0,
             password: hashPassword,
+
         });
         const newCustomer = await User.create({
             idAcc: newAccount.idAcc,
             name,
             mail,
             gender,
-            
+            isShare: 0,
         });
         const newHistory = await User_history.create({
             idUser: newCustomer.idUser,
