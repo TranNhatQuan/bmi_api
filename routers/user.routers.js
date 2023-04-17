@@ -18,7 +18,7 @@ userRouter.get("/menu/edit/:date",authenticate, getRecipeHistory)
 userRouter.put("/menu/edit/:date",authenticate, editMenuUser)
 // //lay name, gender, height va weight, truy van theo mail duoc luu trong token
 userRouter.get("/",authenticate, getInfoUser)
-// userRouter.put("/edit",authenticate, editUser)
+userRouter.put("/edit",authenticate, editUser)
 
 module.exports = {
     userRouter,

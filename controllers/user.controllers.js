@@ -84,6 +84,27 @@ const getRecipeHistory = async (req,res) =>{
     }
 };
 const getInfoUser = async (req, res) =>{
+    try {
+        // const exercise1 = await Exercise.findAll();
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        console.log(acc.User.idUser);
+        const user_h = await User_history.sequelize.query(
+            `select users.idUser,name,gender,height,weight  from user_histories inner join users on user_histories.idUser = users.idUser
+            where user_histories.idUser = ${acc.User.idUser} and  user_histories.date = CURRENT_DATE()`,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+            }
+        );
+        res.status(200).json(user_h);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
 
 };
 
@@ -91,14 +112,50 @@ const editMenuUser = async (req,res) =>{
     const date = req.params;
     const d = date['date'];
     const { id_rec, title } = req.body;
+    
     try {
-        await Recipe_history.sequelize.query(
-            `call edit_recipe('${d}',${user_id},${Object.values(id_rec)},${Object.values(title)})`,
-            {
-                type: QueryTypes.UPDATE,
-                raw: true,
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        await Recipe_history.update({idRecipe : Object.values(id_rec),
+            filter :Object.values(title)},{
+            where: {
+                date:d, 
+                idUser:acc.User.idUser,
             }
-        );
+        });
+        res.status(200).json({
+            message: 'Success'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
+
+const editUser = async (req,res) =>{
+    const { name, gender,height,weight } = req.body;
+    try {
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        console.log(name,gender,height,weight);
+
+        await User.update({name :name,
+            gender :gender},{
+            where: { 
+                idUser:acc.User.idUser,
+            }
+        });
+        await User_history.update({height :height,
+            weight :weight},{
+            where: { 
+                idUser:acc.User.idUser,
+            }
+        });
         res.status(200).json({
             message: 'Success'
         });
@@ -110,5 +167,5 @@ const editMenuUser = async (req,res) =>{
 };
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,
 };
