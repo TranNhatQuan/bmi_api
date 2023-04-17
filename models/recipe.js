@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       Recipe.hasMany(models.Recipe_history, {
         foreignKey: "idRecipe",
       });
-   
+      Recipe.belongsTo(models.Type, {
+        foreignKey: "idType",
+      });
       // define association here
     }
   }
@@ -56,14 +58,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    title: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+    
     image: {
       type: DataTypes.STRING(255),
       allowNull: false,
-    }
+    },
+    
+    
   }, {
     sequelize,
     modelName: 'Recipe',
