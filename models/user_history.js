@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     date: {
       //YYYY-MM-DD
       type: DataTypes.DATEONLY,
+      primaryKey: true,
       allowNull: false,
       primaryKey: true,
     },
