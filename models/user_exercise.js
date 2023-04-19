@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
       references: { model: "Exercise", key: "idExercise" },
       type: DataTypes.INTEGER
     },
+    cmt:{
+      allowNull: true,
+      type: DataTypes.TEXT,
+    },
     isLike: {
       allowNull: false,
       type: DataTypes.INTEGER,

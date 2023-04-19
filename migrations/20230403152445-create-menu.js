@@ -15,11 +15,11 @@ module.exports = {
         allowNull: false,
       },
       image: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       video: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT,
         allowNull:false
       },
       index: {

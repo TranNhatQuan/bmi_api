@@ -31,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     image: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     video: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull:false
     },
     index: {

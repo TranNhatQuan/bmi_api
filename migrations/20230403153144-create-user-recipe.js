@@ -17,6 +17,10 @@ module.exports = {
         references: { model: "Recipes", key: "idRecipe" },
         type: Sequelize.INTEGER
       },
+      cmt:{
+        allowNull: true,
+        type: Sequelize.TEXT,
+      },
       isLike: {
         allowNull: false,
         type: Sequelize.INTEGER,
