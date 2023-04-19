@@ -17,6 +17,10 @@ module.exports = {
         references: { model: "Exercises", key: "idExercise" },
         type: Sequelize.INTEGER
       },
+      cmt:{
+        allowNull: true,
+        type: Sequelize.TEXT,
+      },
       isLike: {
         allowNull: false,
         type: Sequelize.INTEGER,
