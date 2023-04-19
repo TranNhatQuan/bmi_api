@@ -17,19 +17,20 @@ const createAccountForCustomer = async (req, res) => {
             mail,
             role: 0,
             password: hashPassword,
+
         });
         const newCustomer = await User.create({
             idAcc: newAccount.idAcc,
             name,
             mail,
             gender,
-            height,
-            weight,
+            isShare: 0,
         });
         const newHistory = await User_history.create({
             idUser: newCustomer.idUser,
             date: moment().format("YYYY-MM-DD"),
-            weight: newCustomer.weight,
+            weight: weight,
+            height: height,
             water: 0,
             calories_in: 0,
             calories_out: 0,

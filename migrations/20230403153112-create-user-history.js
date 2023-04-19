@@ -11,9 +11,14 @@ module.exports = {
       },
       date: {
         type: Sequelize.DATEONLY,
+        primaryKey: true,
         allowNull: false,
       },
       weight: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      height: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

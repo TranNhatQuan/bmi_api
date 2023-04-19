@@ -23,10 +23,10 @@ module.exports = {
         allowNull: false,
       },
       image: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT,
         allowNull: false,
       },
-      title: {
+      level: {
         type: Sequelize.INTEGER,
         allowNull: true,
       }
