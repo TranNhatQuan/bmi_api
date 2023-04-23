@@ -9,7 +9,7 @@ const checkCreateAccount = (Model) => {
     if (!account) {
       next();
     } else {
-      res.status(400).json({ message: "Tài khoản đã tồn tại!" });
+      res.status(400).json({ isExist: true, isSuccess:false });
     }
   };
 };

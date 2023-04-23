@@ -11,13 +11,15 @@ const getInfoRecipe = async (req, res) => {
           include: User
         })
         
-        const recipe = await Recipe.findOne({
+        let recipe = await Recipe.findOne({
             where: {
             idRecipe: idRecipe,
             },
+            //raw : true,
+            nest: true,
             include: [{
                 model: Recipe_ingredient,
-                attributes: ['unitName','quantity'],
+                attributes: ['unitName','quantity','idIngredient'],
                 include: [{
                   model: Ingredient,
                   attributes: [['name', 'inName'], ['image', 'inImage']]
@@ -33,18 +35,13 @@ const getInfoRecipe = async (req, res) => {
           
           
         });
-        const ingredients = recipe.Recipe_ingredients.map(ri => ri.Ingredient);
-        delete recipe.Recipe_ingredients;
-        recipe.ingredients = ingredients;
-        // const equips = await Recipe_ingredient.;
-        // const info = await Order.sequelize.query(
-        //     "SELECT SUM((I.price*OD.quantity)) as total, DATE_FORMAT(O.datetime, '%d/%m/%Y %H:%i') as datetime, O.status, P.name as name_payment FROM payments as P, orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND P.id_payment = O.id_payment AND O.id_order = :id_order",
-        //     {
-        //     replacements: { id_order: id_order },
-        //     type: QueryTypes.SELECT,
-        //     raw: true,
-        //     }
-        // );
+        
+        recipe.dataValues.isLike=recipe.dataValues.User_recipes[0].isLike;
+        delete recipe.dataValues.User_recipes
+        
+        
+       
+        
         res
         .status(200)
         .json({

@@ -4,4 +4,4 @@
 ### npm i .
 ### npx sequelize-cli db:create
 ### npx sequelize-cli db:migrate
-### npx sequelize-cli db:seed:all
+### npx sequelize-cli db:seed:all//data test

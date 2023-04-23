@@ -12,7 +12,7 @@ const checkExistAccount = (Model) => {
     if (account) {
       next();
     } else {
-      res.status(404).send({ message: "Không tìm thấy tài khoản!" });
+      res.status(404).send({ message: "Không tìm thấy tài khoản!",isSuccess:false, isExist: false, status: true });
     }
   };
 };

@@ -26,6 +26,10 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      points:{
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       level: {
         type: Sequelize.INTEGER,
         allowNull: true,
