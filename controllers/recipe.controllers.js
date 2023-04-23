@@ -97,6 +97,9 @@ const getInfoRecipe = async (req, res) => {
         include: User
       })
       
+        let recipe = await Recipe.findOne({
+          where: {idRecipe}
+        })
         let recipe_fa = await User_recipe.findOne({
             where: {
             idUser: acc.User.idUser,
@@ -106,9 +109,9 @@ const getInfoRecipe = async (req, res) => {
           
           
         });
-        console.log(2)
+        
         if(!recipe_fa){
-          console.log(2.5)
+          
           recipe_fa = await User_recipe.create(
             {
               idUser:acc.User.idUser,
@@ -117,22 +120,32 @@ const getInfoRecipe = async (req, res) => {
               cmt:null
             }
           )
-          
+          if(isLike===0){
+            recipe.points = recipe.points-1
+            await recipe.save();
+          }else{
+            recipe.points = recipe.points+1
+            await recipe.save();
+          }
         }else{
+          
+          if(isLike === 0&&recipe_fa.isLike==1){
+          recipe.points = recipe.points-1
+          await recipe.save();
+          } 
+          else{
+            if(isLike === 1&recipe_fa.isLike==0){
+            recipe.points = recipe.points+1
+            await recipe.save();
+            }
+          }
           
           recipe_fa.isLike = isLike;
           await recipe_fa.save();
         }
-        let recipe = await Recipe.findOne({
-          where: {idRecipe}
-        })
+        
           //let test =1;
-        if(isLike === 0){
-          recipe.points = recipe.points-1
-        }else{
-          recipe.points = recipe.points+1
-        }
-        await recipe.save();
+        
         res
         .status(200)
         
