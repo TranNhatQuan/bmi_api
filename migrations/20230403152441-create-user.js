@@ -20,7 +20,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      
+      weight: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      height: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       idAcc: {
         allowNull: false,
         references: { model: "Accounts", key: "idAcc" },

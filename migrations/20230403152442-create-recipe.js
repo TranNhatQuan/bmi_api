@@ -39,7 +39,10 @@ module.exports = {
         allowNull: false,
         references: { model: "Types", key: "idType" },
       },
-      
+      points:{
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       image: {
         type: Sequelize.TEXT,
         allowNull: false,

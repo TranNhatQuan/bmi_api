@@ -43,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    points:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     level: {
       type: DataTypes.INTEGER,
       allowNull: true,

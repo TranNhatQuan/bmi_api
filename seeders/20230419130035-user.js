@@ -7,6 +7,8 @@ module.exports = {
       {
         name: 'TranNhatQuan',
         gender: 1,
+        weight: 50,
+        height:169,
         idAcc: 1,
         isShare: 1,
         //admin Quan
@@ -14,12 +16,16 @@ module.exports = {
       {
         name: 'Tran Nhat Quan',
         gender: 0,
+        weight: 50,
+        height:169,
         idAcc: 2,
         isShare: 1,
       },
       {
         name: 'Le Mau Anh Duc',
         gender: 1,
+        weight: 50,
+        height:169,
         idAcc: 3,
         isShare: 1,
       },
@@ -27,12 +33,16 @@ module.exports = {
         name: 'Nguyen Duc Thinh',
         gender: 0,
         idAcc: 4,
+        weight: 50,
+        height:169,
         isShare: 0,
       },
       {
         name: 'Ta Minh Tri',
         gender: 0,
         idAcc: 4,
+        weight: 50,
+        height:169,
         isShare: 1,
       }
     ]);

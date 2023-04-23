@@ -8,6 +8,7 @@ const nodemailer = require("nodemailer");
 
 const createAccountForCustomer = async (req, res) => {
     const { mail, password, name, gender, height, weight } = req.body;
+   
     try {
         //tạo ra một chuỗi ngẫu nhiên
         const salt = bcrypt.genSaltSync(10);
@@ -24,6 +25,8 @@ const createAccountForCustomer = async (req, res) => {
             name,
             mail,
             gender,
+            height,
+            weight,
             isShare: 0,
         });
         const newHistory = await User_history.create({
@@ -37,12 +40,14 @@ const createAccountForCustomer = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Tạo tài khoản thành công!",
+            isExist: false,
+            isSuccess:true
         });
 
     } catch (error) {
         res.status(500).json({
-            message: "Thao tác thất bại!",
+            isExist: true,
+            isSuccess:false
         });
     }
 };
@@ -72,13 +77,14 @@ const login = async (req, res) => {
         res
             .status(200)
             .json({
-                message: "Đăng nhập thành công!",
+               
+                isSuccess : true,
                 token,
 
                 expireTime: 60 * 60 * 60,
             });
     } else {
-        res.status(400).json({ message: "Sai thông tin đăng nhập!" });
+        res.status(400).json({ isSuccess:false});
     }
 };
 
@@ -97,7 +103,7 @@ const changePassword = async (req, res) => {
             if (newPassword == repeatPassword) {
                 if (newPassword == oldPassword) {
                     res.status(400).json({
-                        message: "Mật khẩu mới không được giống với mật khẩu cũ!",
+                        status: true,
                     });
                 } else {
                     //tạo ra một chuỗi ngẫu nhiên
@@ -108,46 +114,52 @@ const changePassword = async (req, res) => {
                     accountUpdate.password = hashPassword;
                     await accountUpdate.save();
                     res.status(200).json({
-                        message: "Đổi mật khẩu thành công!",
+                        status: true,
+                        isSuccess: true
                     });
                 }
             } else {
                 res.status(400).json({
-                    message: "Mật khẩu lặp lại không đúng!",
+                    status: true,
+                    isSuccess:false
                 });
             }
         } else {
             res.status(400).json({
-                message: "Mật khẩu không chính xác!",
+                status: false,
+                isSuccess:false
             });
         }
     } catch (error) {
         res.status(500).json({
-            message: "Thao tác thất bại!",
+            status: true,
+            isSuccess:false
         });
     }
 };
 
 const logout = async (req, res, next) => {
     res.removeHeader("access_token");
-    res.status(200).json({ message: "Đăng xuất thành công!" });
+
+    res.status(200).json({ isSuccess:true});
 };
 
 const forgotPassword = async (req, res) => {
     const { mail } = req.body;
     try {
         const randomID = Math.floor(Math.random() * (999999 - 100000 + 1) + 100000);
-        const isExist = await Account.findOne({
+        const isExist1 = await Account.findOne({
             where: {
                 forgot: randomID,
             },
         });
-        if (isExist !== null) {
+        if (isExist1 !== null) {
             res.status(400).json({
-                message: `Có lỗi xảy ra vui lòng thử lại!`,
+                isExist: true,
+                isSuccess:false
             });
         } else {
-
+            
             await Account.sequelize.query(
                 "UPDATE accounts SET forgot = :randomID WHERE mail = :mail",
                 {
@@ -177,72 +189,20 @@ const forgotPassword = async (req, res) => {
             });
 
             res.status(200).json({
+                isExist: true,
+                isSuccess: true,
                 message: `Mã xác minh đã được gửi về email: ${mail} vui lòng kiểm tra hòm thư!`,
             });
         }
     } catch (error) {
-        console.log(error);
+        res.status(500).json({
+            isExist: true,
+            isSuccess:false
+        });
     }
 };
 
-// const forgotPassword = async (req, res, next) => {
-//   const { username } = req.body;
-//   const randomID = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000);
-//   try {
-//     const account = await Account.sequelize.query(
-//       "SELECT CU.email FROM customers as CU, accounts as A WHERE A.id_account = CU.id_account AND A.username = :username",
-//       {
-//         type: QueryTypes.SELECT,
-//         replacements: {
-//           username: username,
-//         },
-//       }
-//     );
-//     if (account) {
-//       await Account.sequelize.query(
-//         "UPDATE account SET forgot = :randomID WHERE username = :username",
-//         {
-//           type: QueryTypes.UPDATE,
-//           replacements: {
-//             randomID: randomID,
-//             username: username,
-//           },
-//         }
-//       );
 
-//       let transporter = nodemailer.createTransport({
-//         host: "smtp.gmail.com",
-//         port: 587,
-//         secure: false, // true for 465, false for other ports
-//         auth: {
-//           user: "n19dccn107@student.ptithcm.edu.vn", // generated ethereal user
-//           pass: "bqztpfkmmbpzmdxl", // generated ethereal password
-//         },
-//       });
-//       // send mail with defined transport object
-//       let info = await transporter.jsonMail({
-//         from: "n19dccn107@student.ptithcm.edu.vn", // sender address
-//         to: `${account[0].email}`, // list of receivers
-//         subject: "FORGOT PASSWORD", // Subject line
-//         text: "FORGOT PASSWORD", // plain text body
-//         html: `Mã xác nhận của bạn là: ${randomID}`, // html body
-//       });
-//       var s2 = account[0].email
-//       var s1 = s2.substring(0, s2.length - 15)
-//       var s3 = s2.substring(s2.length - 15, s2.length)
-//       var email = s1+s3.replace(/\S/gi, '*');
-//       res.status(200).json({
-//         message: `Mã xác minh đã được gửi về email: ${email} vui lòng kiểm tra hòm thư!`,
-//       });
-//     } else {
-//       res.status(201).json({
-//         message: `Không tìm thấy username!`,
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 const verify = async (req, res, next) => {
     const { verifyID, mail } = req.body;
@@ -271,6 +231,7 @@ const accessForgotPassword = async (req, res, next) => {
     if (password != repeatPassword) {
         res.status(400).json({
             message: `Mật khẩu lặp lại không chính xác!`,
+            isSuccess:false
         });
     } else {
         const salt = bcrypt.genSaltSync(10);
@@ -288,31 +249,19 @@ const accessForgotPassword = async (req, res, next) => {
             await accountUpdate.save();
             res.status(200).json({
                 message: `Lấy lại mật khẩu thành công!`,
+                isSuccess:true
             });
         } catch (error) {
             res.status(500).json({
                 message: `Lấy lại mật khẩu thất bại!`,
+                isSuccess:false
             });
         }
     }
 };
 
 
-// const information = async (req, res) => {
-//   const { username } = req;
-//   const infors = await Account.sequelize.query(
-//     "SELECT NV.*, PQ.tenQuyen FROM taikhoans as TK, nhanviens as NV, phanquyens as PQ WHERE TK.maNV = NV.maNV AND NV.maQuyen = PQ.maQuyen AND TK.username = :username",
-//     {
-//       type: QueryTypes.SELECT,
-//       replacements: {
-//         username: username,
-//       },
-//     }
-//   );
-//   res.status(200).json("infor", {
-//     infors: infors[0],
-//   });
-// };
+
 
 module.exports = {
     // getDetailTaiKhoan,
