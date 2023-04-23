@@ -45,10 +45,10 @@ const getInfoRecipe = async (req, res) => {
         res
         .status(200)
         .json({
-          recipe
+          recipe, isSuccess:true
         });
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({isSuccess:false});
     }
   };
   const getFavorite= async (req, res) => {
@@ -81,10 +81,66 @@ const getInfoRecipe = async (req, res) => {
         res
         .status(200)
         .json({
-          recipe_fa
+          recipe_fa,isSuccess:true
         });
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json({isSuccess:false});
+    }
+  };
+  const likeRecipe= async (req, res) => {
+    const idRecipe =req.query.idRecipe;
+    const isLike = parseInt(req.query.isLike);
+    
+    try {
+      const acc = await Account.findOne({
+        where: {mail: req.mail},
+        include: User
+      })
+      
+        let recipe_fa = await User_recipe.findOne({
+            where: {
+            idUser: acc.User.idUser,
+            idRecipe,
+            
+            }
+          
+          
+        });
+        console.log(2)
+        if(!recipe_fa){
+          console.log(2.5)
+          recipe_fa = await User_recipe.create(
+            {
+              idUser:acc.User.idUser,
+              idRecipe:idRecipe,
+              isLike:isLike,
+              cmt:null
+            }
+          )
+          
+        }else{
+          
+          recipe_fa.isLike = isLike;
+          await recipe_fa.save();
+        }
+        let recipe = await Recipe.findOne({
+          where: {idRecipe}
+        })
+          //let test =1;
+        if(isLike === 0){
+          recipe.points = recipe.points-1
+        }else{
+          recipe.points = recipe.points+1
+        }
+        await recipe.save();
+        res
+        .status(200)
+        
+        .json({
+          recipe_fa,isSuccess:true
+        });
+    } catch (error) {
+      res.status(500).json({isSuccess:false});
     }
   };
   const getAllRecipe= async (req, res) => {
@@ -140,7 +196,7 @@ const getInfoRecipe = async (req, res) => {
     }
   };
   module.exports = {
-    getInfoRecipe, getFavorite, getAllRecipe ,getRecipeByTitle
+    getInfoRecipe, getFavorite, getAllRecipe ,getRecipeByTitle, likeRecipe
    
   };
 
