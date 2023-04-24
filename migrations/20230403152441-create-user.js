@@ -30,6 +30,7 @@ module.exports = {
       },
       idAcc: {
         allowNull: false,
+        unique:true,
         references: { model: "Accounts", key: "idAcc" },
         type: Sequelize.INTEGER
       },

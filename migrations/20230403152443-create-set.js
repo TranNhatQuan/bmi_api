@@ -19,6 +19,11 @@ module.exports = {
         type: Sequelize.INTEGER
       }
     });
+    await queryInterface.addConstraint('Sets', {
+      fields: ['idExercise', 'index'],
+      type: 'unique',
+      name: 'unique_idExercise_index'
+    });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Sets');
