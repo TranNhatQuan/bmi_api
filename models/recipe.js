@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       Recipe.hasMany(models.Recipe_history, {
         foreignKey: "idRecipe",
       });
+      Recipe.hasOne(models.Recipe_rank, {
+        foreignKey: "idRecipe"
+      })
       Recipe.belongsTo(models.Type, {
         foreignKey: "idType",
       });
@@ -58,7 +61,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    
+    points:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     image: {
       type: DataTypes.TEXT,
       allowNull: false,

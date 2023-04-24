@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Exercise.hasMany(models.User_exercise, {
         foreignKey: "idExercise",
       });
+      Exercise.hasOne(models.Exercise_rank,{
+        foreignKey: "idExercise",
+      })
       Exercise.hasMany(models.Set, {
         foreignKey: "idExercise",
       });
@@ -42,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
     image: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    points:{
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     level: {
       type: DataTypes.INTEGER,

@@ -28,6 +28,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      
     });
   },
   async down(queryInterface, Sequelize) {

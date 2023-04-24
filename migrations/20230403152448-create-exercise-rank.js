@@ -2,34 +2,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Exercises', {
-      idExercise: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+    await queryInterface.createTable('Exercise_ranks', {
+      rank:{
+        type:Sequelize.INTEGER,
+        primaryKey:true,
       },
-
+      idExercise: {    
+        allowNull:false,
+        type: Sequelize.INTEGER,
+        references: { model: "Exercises", key: "idExercise" },
+      },
       name: {
         type: Sequelize.STRING(45),
-        unique: true,
         allowNull: false,
-      },
-      info: {
-        type: Sequelize.STRING(90),
-        allowNull: true,
+
       },
       calories: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      image: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
       points:{
         type: Sequelize.INTEGER,
         allowNull: false
+      },
+      image: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       level: {
         type: Sequelize.INTEGER,
@@ -38,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Exercises');
+    await queryInterface.dropTable('Exercise_ranks');
   }
 };

@@ -36,6 +36,11 @@ module.exports = {
         references: { model: "Sets", key: "idSet" },
       }
     });
+    await queryInterface.addConstraint('Menus', {
+      fields: ['idSet', 'index'],
+      type: 'unique',
+      name: 'unique_idSet_index'
+    });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Menus');
