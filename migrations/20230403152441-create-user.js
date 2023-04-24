@@ -28,6 +28,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      
       idAcc: {
         allowNull: false,
         unique:true,
@@ -39,6 +40,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       }
     });
+    await queryInterface.sequelize.query(`CREATE VIEW UsersWithBMI AS SELECT idUser,name,gender, weight*100*100 / (height * height) as bmi FROM Users WHERE isShare=1;`);
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
