@@ -1,4 +1,5 @@
-const { Recipe, Recipe_ingredient, Ingredient, User_recipe, User, Account } = require("../models")
+const { Recipe, Recipe_ingredient, Ingredient, User_recipe, User, Account, Recipe_rank } = require("../models")
+const moment = require('moment-timezone'); // require
 const { QueryTypes } = require("sequelize");
 
 const getInfoRecipe = async (req, res) => {
@@ -117,6 +118,7 @@ const getInfoRecipe = async (req, res) => {
               idUser:acc.User.idUser,
               idRecipe:idRecipe,
               isLike:isLike,
+              date: new Date(),
               cmt:null
             }
           )
@@ -156,6 +158,57 @@ const getInfoRecipe = async (req, res) => {
       res.status(500).json({isSuccess:false});
     }
   };
+  const userCMT= async (req, res) => {
+    const { idRecipe } = req.params;
+    const { cmt } = req.body;
+    
+    try {
+      const acc = await Account.findOne({
+        where: {mail: req.mail},
+        include: User
+      })
+      
+      let recipe_fa = await User_recipe.findOne({
+          where: {
+          idUser: acc.User.idUser,
+          idRecipe,
+        
+          }
+          
+          
+      });
+        
+      if(!recipe_fa){
+          
+        recipe_fa = await User_recipe.create(
+          {
+            idUser:acc.User.idUser,
+            idRecipe:idRecipe,
+            isLike:0,
+            date: moment().add(7,'hours').format("YYYY-MM-DD HH:mm:ss"),
+            cmt:cmt
+          }
+        )
+        
+        }
+        else{
+          recipe_fa.cmt = cmt;
+          recipe_fa.date = moment().add(7,'hours').format("YYYY-MM-DD HH:mm:ss"),
+          await recipe_fa.save();
+        }
+        
+          //let test =1;
+        
+        res
+        .status(200)
+        
+        .json({
+          isSuccess:true
+        });
+    } catch (error) {
+      res.status(500).json({isSuccess:false});
+    }
+  };
   const getAllRecipe= async (req, res) => {
     
     
@@ -190,15 +243,7 @@ const getInfoRecipe = async (req, res) => {
           where: title
         });
       
-        // const equips = await Recipe_ingredient.;
-        // const info = await Order.sequelize.query(
-        //     "SELECT SUM((I.price*OD.quantity)) as total, DATE_FORMAT(O.datetime, '%d/%m/%Y %H:%i') as datetime, O.status, P.name as name_payment FROM payments as P, orders as O, order_details as OD, items as I WHERE O.id_order = OD.id_order AND OD.id_item = I.id_item AND P.id_payment = O.id_payment AND O.id_order = :id_order",
-        //     {
-        //     replacements: { id_order: id_order },
-        //     type: QueryTypes.SELECT,
-        //     raw: true,
-        //     }
-        // );
+        
         res
         .status(200)
         .json({
@@ -208,8 +253,41 @@ const getInfoRecipe = async (req, res) => {
       res.status(500).json(error);
     }
   };
+  const updateRank= async (req, res) => {
+    const title = req.params
+    
+    try {
+      
+      const topRecipes = await Recipe.findAll({
+        order: [['points', 'DESC']],
+        limit: 30
+      });
+      
+      for (let i = 0; i < topRecipes.length; i++) {
+        let recipe = topRecipes[i];
+        await Recipe_rank.upsert({
+          rank: i + 1,
+          idRecipe: recipe.idRecipe,
+          name: recipe.name,
+          points: recipe.points,
+          calories: recipe.calories,
+          image: recipe.image
+
+        });
+      }
+      
+        
+        res
+        .status(200)
+        .json({
+          isSuccess:true
+        });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
   module.exports = {
-    getInfoRecipe, getFavorite, getAllRecipe ,getRecipeByTitle, likeRecipe
+    getInfoRecipe, getFavorite, getAllRecipe ,getRecipeByTitle, likeRecipe, userCMT, updateRank
    
   };
 

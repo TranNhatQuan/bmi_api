@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    
     isShare: {
       allowNull: false,
       type: DataTypes.INTEGER,

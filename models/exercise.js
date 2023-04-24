@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Exercise.hasMany(models.User_exercise, {
         foreignKey: "idExercise",
       });
+      Exercise.hasOne(models.Exercise_rank,{
+        foreignKey: "idExercise",
+      })
       Exercise.hasMany(models.Set, {
         foreignKey: "idExercise",
       });

@@ -1,5 +1,5 @@
 const { Account, User, User_history } = require("../models");
-const moment = require('moment'); // require
+const moment = require('moment-timezone'); // require
 
 const { QueryTypes } = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -31,7 +31,7 @@ const createAccountForCustomer = async (req, res) => {
         });
         const newHistory = await User_history.create({
             idUser: newCustomer.idUser,
-            date: moment().format("YYYY-MM-DD"),
+            date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
             weight: weight,
             height: height,
             water: 0,
