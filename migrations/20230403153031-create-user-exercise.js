@@ -21,6 +21,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.TEXT,
       },
+      date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       isLike: {
         allowNull: false,
         type: Sequelize.INTEGER,
