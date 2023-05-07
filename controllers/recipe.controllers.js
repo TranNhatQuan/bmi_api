@@ -311,7 +311,7 @@ const getAllRecipeFilter = async (req, res) => {
     }
     
 
-    let maxPage = Math.ceil(result.count/4);
+    let maxPage = Math.ceil(result.count/limit);
     let recipes = result.rows;
     let recipeJson = JSON.stringify(recipes)
     console.log(recipeJson)
