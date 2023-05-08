@@ -1,4 +1,4 @@
-const { Recipe,User_history,Recipe_history,Account,User,Sequelize,Userswithbmi} = require("../models");
+const { Recipe,User_history,Recipe_history,Account,User,Sequelize,Userswithbmi,User_recipe,User_exercise} = require("../models");
 const moment = require('moment'); // require
 const { Op } = require("sequelize");
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
@@ -113,31 +113,52 @@ const getRecipeHistory = async (req,res) =>{
             res.status(200).json(recipe_his);
         }
         else{
-            const sang = await Recipe_history.findAll({
+            const breakfast = await Recipe_history.findAll({
                 where: {
                     date:d, 
                     idUser:acc.User.idUser, 
                     filter:1,
                 },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image']
+                    }
+                  ]
             });
-            const trua = await Recipe_history.findAll({
+            const lunch = await Recipe_history.findAll({
                 where: {
                     date:d, 
                     idUser:acc.User.idUser, 
                     filter:2,
                 },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image']
+                    }
+                  ]
             });
-            const toi = await Recipe_history.findAll({
+            const dinner = await Recipe_history.findAll({
                 where: {
                     date:d, 
                     idUser:acc.User.idUser, 
                     filter:3,
                 },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image']
+                    }
+                  ]
             });
             res
       .status(200)
       .json({
-        sang, trua, toi
+        breakfast, lunch, dinner
       });
         }
     } catch (error) {
@@ -271,19 +292,38 @@ const editUser = async (req,res) =>{
     }
 };
 const getUser = async (req,res) =>{
-    const date = req.params;
-    const d = date['date']
-    const acc = await Account.findOne({
-        where: { mail: req.mail },
-        include: User
-    });
+    const idUser = req.params;
+    const id = idUser['idUser'];
+    console.log(idUser);
     try {
-        const u_history = await User_history.findAll({
+        const user = await Userswithbmi.findAll({
             where: {
-                date:d, idUser:acc.User.idUser,
+            idUser: id,
             },
         });
-        res.status(200).json(u_history);
+        const user_recipe = await User_recipe.sequelize.query(
+            `select user_recipes.idRecipe,name,calories,image,cmt from user_recipes inner join recipes
+            on user_recipes.idRecipe= recipes.idRecipe 
+            where user_recipes.idUser=${id} and isLike=1`,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+            }
+        );
+        const user_ex = await User_exercise.sequelize.query(
+            `select user_exercises.idExercise,name,calories,image,cmt from user_exercises inner join exercises
+            on user_exercises.idExercise= exercises.idExercise
+            where user_exercises.idUser=${id} and isLike=1`,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+            }
+        );
+        res
+        .status(200)
+        .json({
+            user,user_recipe,user_ex
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -322,7 +362,7 @@ try {
     if(min===0&&max===0){
        result = await Userswithbmi.findAndCountAll({
         
-        // attributes: ['idUser', 'name','gender' ,'height', 'weight', 'bmi'],
+        attributes: ['idUser', 'name','gender' ,'height', 'weight', 'bmi'],
         offset: limit_page[0],
         limit: limit_page[1] - limit_page[0],
         nest: true,   
