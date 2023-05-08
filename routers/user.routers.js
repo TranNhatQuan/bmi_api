@@ -22,14 +22,14 @@ userRouter.get("/detail",authenticate, getInfoUser)
 userRouter.put("/edit/detail",authenticate, editUser)
 //Lấy ra thông tin của user theo idUser
 //Trả về name, giới tính, ngày tham gia(ngày đầu tiên trong user_history), height, weight, bmi, list user_recipe, user_exercise có isLike = 1 của người đó
-userRouter.get("/detail/:idUser",authenticate, getUser)
+//userRouter.get("/detail/:idUser",authenticate, getUser)
 // Lấy ra list user 
 //Nhận các biến limit, page, min, max qua query
 //limit là số user trong 1 page, 
 //page là page hiện tại, min, max là khoảng bmi filter(min, max = 0 là không có filter)
 //BE trả về list user gồm các thông tin id, name, bmi, gender 
 //+ biến maxPage cho biết nếu chia theo limit như vậy có tổng bao nhiêu page
-userRouter.get("/hwnet/list?limit=10&page=1&min=10&max=33",authenticate, listUser)
+userRouter.get("/hwnet/list",authenticate, listUser)
 module.exports = {
     userRouter,
 }

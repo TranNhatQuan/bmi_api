@@ -1,6 +1,6 @@
-const { Recipe,User_history,Recipe_history,Account,User,Sequelize} = require("../models");
+const { Recipe,User_history,Recipe_history,Account,User,Sequelize,Userswithbmi} = require("../models");
 const moment = require('moment'); // require
-
+const { Op } = require("sequelize");
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
 
 // const  getRecommend = async (req,res) =>{
@@ -19,11 +19,24 @@ const getHistory = async (req,res) =>{
         include: User
     });
     try {
-        const u_history = await User_history.findAll({
+        let u_history = await User_history.findOne({
             where: {
                 date:d, idUser:acc.User.idUser,
             },
         });
+        console.log(!u_history);
+        if(!u_history){
+            u_history = await User_history.create({
+                idUser: acc.User.idUser,
+                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                weight: 0,
+                height: 0,
+                water: 0,
+                calories_in: 0,
+                calories_out: 0,
+            });
+            console.log(u_history);
+        }
         res.status(200).json(u_history);
 
     } catch (error) {
@@ -65,18 +78,68 @@ const getRecipeHistory = async (req,res) =>{
         include: User
     });
     try {
-        const recipe_his = await Recipe_history.sequelize.query(
-            `select recipe_histories.idUser , recipe_histories.date , recipes.*
-            from recipe_histories 
-            inner join recipes on recipe_histories.idRecipe = recipes.idRecipe
-            where recipe_histories.idUser = ${acc.User.idUser} and recipe_histories.date = '${d}'`,
-            {
-                type: QueryTypes.SELECT,
-                raw: true,
-            }
-        );
-        res.status(200).json(recipe_his);
-
+        let recipe_his = await Recipe_history.findOne({
+            where: {
+                date:d, idUser:acc.User.idUser,
+            },
+        });
+        if(!recipe_his){
+            let randomID = Math.floor(Math.random() * (22));
+            recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe: randomID,
+                filter: 1,
+            });
+            randomID = Math.floor(Math.random() * (22));
+            recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe: randomID,
+                filter: 2,
+            });
+            randomID = Math.floor(Math.random() * (22));
+            recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe: randomID,
+                filter: 3,
+            });
+            recipe_his = await Recipe_history.findAll({
+                where: {
+                    date:d, idUser:acc.User.idUser,
+                },
+            });
+            res.status(200).json(recipe_his);
+        }
+        else{
+            const sang = await Recipe_history.findAll({
+                where: {
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:1,
+                },
+            });
+            const trua = await Recipe_history.findAll({
+                where: {
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:2,
+                },
+            });
+            const toi = await Recipe_history.findAll({
+                where: {
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:3,
+                },
+            });
+            res
+      .status(200)
+      .json({
+        sang, trua, toi
+      });
+        }
     } catch (error) {
         res.status(500).json({
             message: 'Error'
@@ -111,20 +174,58 @@ const getInfoUser = async (req, res) =>{
 const editMenuUser = async (req,res) =>{
     const date = req.params;
     const d = date['date'];
-    const { id_rec, title } = req.body;
-    
+    let { breakfast, lunch,dinner } = req.body;
+    console.log(breakfast);
+    breakfast= breakfast.split(',').map(Number);
+    lunch=lunch.split(',').map(Number);
+    dinner=dinner.split(',').map(Number);
     try {
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
         });
-        await Recipe_history.update({idRecipe : Object.values(id_rec),
-            filter :Object.values(title)},{
+        let recipe_his = await Recipe_history.findOne({
             where: {
-                date:d, 
-                idUser:acc.User.idUser,
-            }
+                date:d, idUser:acc.User.idUser,
+            },
         });
+        if(!recipe_his){
+           recipe_his = await Recipe_history.destroy({
+            where: {
+                date:d, idUser:acc.User.idUser,
+            },
+        });
+    }
+    // recipe_his = await Recipe_history.create({
+    //             idUser: acc.User.idUser,
+    //             date: d,
+    //             idRecipe: breakfast[0],
+    //             filter: 1,
+    //         });
+        for (let x of breakfast) {
+                recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe: x,
+                filter: 1,
+            });
+        }
+        for (let x of lunch) {
+                recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe:x,
+                filter: 2,
+            });
+        }
+        for (let x of dinner) {
+                recipe_his = await Recipe_history.create({
+                idUser: acc.User.idUser,
+                date: d,
+                idRecipe: x,
+                filter: 3,
+            });
+        }
         res.status(200).json({
             message: 'Success'
         });
@@ -197,70 +298,58 @@ const listUser = async (req,res) =>{
   const page = Number(req.query.page);
   const limit_page = [limit * (page - 1), limit * page]
 
-  try {
+    
+    // try {
+    //         const user = await User.sequelize.query(
+    //             `SELECT idUser , name,gender,weight,height, weight/((height/100)*(height/100)) as BMI FROM users
+    //             where weight/((height/100)*(height/100))<=${max} and weight/((height/100)*(height/100))>=${min} and isShare=1`,
+    //             {
+    //                 type: QueryTypes.SELECT,
+    //                 raw: true,
+    //             }
+    //         );
+    //         res.status(200).json(user); 
+
+//   } catch (error) {
+//     res.status(500).json({ isSuccess: false });
+//   }
+try {
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User
     })
     let result;
     if(min===0&&max===0){
-       result = await Recipe.findAndCountAll({
+       result = await Userswithbmi.findAndCountAll({
         
-        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        // attributes: ['idUser', 'name','gender' ,'height', 'weight', 'bmi'],
         offset: limit_page[0],
         limit: limit_page[1] - limit_page[0],
-        nest: true,
-        include: [
-          {
-            model: User_recipe,
-            where: { isLike: 1, idUser: acc.User.idUser },
-            required: false,
-            attributes: ['isLike']
-          },
-          ...ingredient.map(id => ({
-            model: Recipe_ingredient,
-            where: { idIngredient: id },
-            required: id!==0,
-            attributes: []
-          }))
-        ]
+        nest: true,   
       });
-    }else{
-       result = await Recipe.findAndCountAll({
-        where: {
-          calories: { [Op.between]: calories }
+      console.log(result);
+
+    }
+    else{
+        console.log(max);
+       result = await Userswithbmi.findAndCountAll({
+        where: { bmi: { [Op.gte]: min,
+                        [Op.lte]: max
+                    }
         },
-        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        attributes: ['idUser', 'name','gender' ,'height', 'weight', 'bmi'],
         offset: limit_page[0],
         limit: limit_page[1] - limit_page[0],
         nest: true,
-        include: [
-          {
-            model: User_recipe,
-            where: { isLike: 1, idUser: acc.User.idUser },
-            required: false,
-            attributes: ['isLike']
-          },
-          ...ingredient.map(id => ({
-            model: Recipe_ingredient,
-            where: { idIngredient: id },
-            required: id!==0,
-            attributes: []
-          }))
-        ]
       });
     }
     
-
     let maxPage = Math.ceil(result.count/limit);
-    let recipes = result.rows;
-    let recipeJson = JSON.stringify(recipes)
-    console.log(recipeJson)
-    recipeJson = transformRecipes(JSON.parse(recipeJson))
+    let users = result.rows;
     res
       .status(200)
       .json({
-        recipeJson, isSuccess: true, maxPage
+        users, isSuccess: true, maxPage
       });
   } catch (error) {
     res.status(500).json({ isSuccess: false });
