@@ -92,7 +92,7 @@ const getInfoUser = async (req, res) =>{
         });
         console.log(acc.User.idUser);
         const user_h = await User_history.sequelize.query(
-            `select users.idUser,name,gender,height,weight  from user_histories inner join users on user_histories.idUser = users.idUser
+            `select users.idUser,name,gender,user_histories.height,user_histories.weight  from user_histories inner join users on user_histories.idUser = users.idUser
             where user_histories.idUser = ${acc.User.idUser} and  user_histories.date = CURRENT_DATE()`,
             {
                 type: QueryTypes.SELECT,
@@ -136,7 +136,7 @@ const editMenuUser = async (req,res) =>{
 };
 
 const editUser = async (req,res) =>{
-    const { name, gender,height,weight } = req.body;
+    const { name, gender,height,weight,isshare } = req.body;
     try {
         const acc = await Account.findOne({
             where: { mail: req.mail },
@@ -145,7 +145,10 @@ const editUser = async (req,res) =>{
         console.log(name,gender,height,weight);
 
         await User.update({name :name,
-            gender :gender},{
+            gender :gender,
+            height : height,
+            weight : weight,
+            isShare: isshare },{
             where: { 
                 idUser:acc.User.idUser,
             }
@@ -154,6 +157,7 @@ const editUser = async (req,res) =>{
             weight :weight},{
             where: { 
                 idUser:acc.User.idUser,
+                date:  moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
             }
         });
         res.status(200).json({
@@ -165,7 +169,104 @@ const editUser = async (req,res) =>{
         });
     }
 };
+const getUser = async (req,res) =>{
+    const date = req.params;
+    const d = date['date']
+    const acc = await Account.findOne({
+        where: { mail: req.mail },
+        include: User
+    });
+    try {
+        const u_history = await User_history.findAll({
+            where: {
+                date:d, idUser:acc.User.idUser,
+            },
+        });
+        res.status(200).json(u_history);
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+};
+const listUser = async (req,res) =>{
+  const min = Number(req.query.min);
+  const max = Number(req.query.max);
+  const limit = Number(req.query.limit);
+  const page = Number(req.query.page);
+  const limit_page = [limit * (page - 1), limit * page]
+
+  try {
+    const acc = await Account.findOne({
+      where: { mail: req.mail },
+      include: User
+    })
+    let result;
+    if(min===0&&max===0){
+       result = await Recipe.findAndCountAll({
+        
+        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        offset: limit_page[0],
+        limit: limit_page[1] - limit_page[0],
+        nest: true,
+        include: [
+          {
+            model: User_recipe,
+            where: { isLike: 1, idUser: acc.User.idUser },
+            required: false,
+            attributes: ['isLike']
+          },
+          ...ingredient.map(id => ({
+            model: Recipe_ingredient,
+            where: { idIngredient: id },
+            required: id!==0,
+            attributes: []
+          }))
+        ]
+      });
+    }else{
+       result = await Recipe.findAndCountAll({
+        where: {
+          calories: { [Op.between]: calories }
+        },
+        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        offset: limit_page[0],
+        limit: limit_page[1] - limit_page[0],
+        nest: true,
+        include: [
+          {
+            model: User_recipe,
+            where: { isLike: 1, idUser: acc.User.idUser },
+            required: false,
+            attributes: ['isLike']
+          },
+          ...ingredient.map(id => ({
+            model: Recipe_ingredient,
+            where: { idIngredient: id },
+            required: id!==0,
+            attributes: []
+          }))
+        ]
+      });
+    }
+    
+
+    let maxPage = Math.ceil(result.count/limit);
+    let recipes = result.rows;
+    let recipeJson = JSON.stringify(recipes)
+    console.log(recipeJson)
+    recipeJson = transformRecipes(JSON.parse(recipeJson))
+    res
+      .status(200)
+      .json({
+        recipeJson, isSuccess: true, maxPage
+      });
+  } catch (error) {
+    res.status(500).json({ isSuccess: false });
+  }
+};
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const { User } = require("../models")
 const { authenticate } = require("../middlewares/auth/authenticate.js")
-const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory }
+const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory,getUser,listUser,}
     = require("../controllers/user.controllers");
 
 const userRouter = express.Router();
@@ -17,9 +17,19 @@ userRouter.get("/menu/edit/:date",authenticate, getRecipeHistory)
 // //sua do an theo ngay cua user
 userRouter.put("/menu/edit/:date",authenticate, editMenuUser)
 // //lay name, gender, height va weight, truy van theo mail duoc luu trong token
-userRouter.get("/",authenticate, getInfoUser)
-userRouter.put("/edit",authenticate, editUser)
-
+userRouter.get("/detail",authenticate, getInfoUser)
+//sua thong tin user: name, gender,height,weight
+userRouter.put("/edit/detail",authenticate, editUser)
+//Lấy ra thông tin của user theo idUser
+//Trả về name, giới tính, ngày tham gia(ngày đầu tiên trong user_history), height, weight, bmi, list user_recipe, user_exercise có isLike = 1 của người đó
+userRouter.get("/detail/:idUser",authenticate, getUser)
+// Lấy ra list user 
+//Nhận các biến limit, page, min, max qua query
+//limit là số user trong 1 page, 
+//page là page hiện tại, min, max là khoảng bmi filter(min, max = 0 là không có filter)
+//BE trả về list user gồm các thông tin id, name, bmi, gender 
+//+ biến maxPage cho biết nếu chia theo limit như vậy có tổng bao nhiêu page
+userRouter.get("/hwnet/list?limit=10&page=1&min=10&max=33",authenticate, listUser)
 module.exports = {
     userRouter,
 }
