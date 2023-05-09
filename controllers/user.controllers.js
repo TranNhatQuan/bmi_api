@@ -73,17 +73,19 @@ const getAllhistory = async (req,res) =>{
 const getRecipeHistory = async (req,res) =>{
     const date = req.params;
     const d = date['date'];
+    let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
     const acc = await Account.findOne({
         where: { mail: req.mail },
         include: User
     });
+    console.log(now);
     try {
         let recipe_his = await Recipe_history.findOne({
             where: {
                 date:d, idUser:acc.User.idUser,
             },
         });
-        if(!recipe_his){
+        if(!recipe_his && d>=now){
             let randomID = Math.floor(Math.random() * (22));
             recipe_his = await Recipe_history.create({
                 idUser: acc.User.idUser,
@@ -105,14 +107,6 @@ const getRecipeHistory = async (req,res) =>{
                 idRecipe: randomID,
                 filter: 3,
             });
-            recipe_his = await Recipe_history.findAll({
-                where: {
-                    date:d, idUser:acc.User.idUser,
-                },
-            });
-            res.status(200).json(recipe_his);
-        }
-        else{
             let breakfast = await Recipe_history.findAll({
                 attributes: ['idRecipe'],
                 where: {
@@ -131,7 +125,7 @@ const getRecipeHistory = async (req,res) =>{
             });
             let id_Recipe= breakfast.map(item=>item.idRecipe)
             let islike = await User_recipe.findAll({
-                
+               
                 where: {
                     idRecipe: {[Op.in]: id_Recipe
                     },
@@ -139,10 +133,15 @@ const getRecipeHistory = async (req,res) =>{
                 },
             });
             for (let item of breakfast) {
+                item.dataValues.isLike = 0;
                 let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
                 if (like) {
                   item.dataValues.isLike = like.dataValues.isLike;
                 }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
               }
             let lunch = await Recipe_history.findAll({
                 attributes: ['idRecipe'],
@@ -169,10 +168,15 @@ const getRecipeHistory = async (req,res) =>{
                 },
             });
             for (let item of lunch) {
+                item.dataValues.isLike = 0;
                 let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
                 if (like) {
                   item.dataValues.isLike = like.dataValues.isLike;
                 }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
               }
             let dinner = await Recipe_history.findAll({
                 attributes: ['idRecipe'],
@@ -199,17 +203,136 @@ const getRecipeHistory = async (req,res) =>{
                 },
             });
             for (let item of dinner) {
+                item.dataValues.isLike = 0;
                 let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
                 if (like) {
                   item.dataValues.isLike = like.dataValues.isLike;
                 }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
               }
-            res
-      .status(200)
-      .json({
-        breakfast, lunch, dinner
-      });
+              res
+              .status(200)
+              .json({
+                breakfast, lunch, dinner
+              });
         }
+        else{
+            let breakfast = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
+                where: {
+                    
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:1,
+                },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image'],
+                    },
+                  ]
+            });
+            let id_Recipe= breakfast.map(item=>item.idRecipe)
+            let islike = await User_recipe.findAll({
+               
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of breakfast) {
+                item.dataValues.isLike = 0;
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
+              }
+            let lunch = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
+                where: {
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:2,
+                },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image']
+                    }
+                  ]
+            });
+            id_Recipe= lunch.map(item=>item.idRecipe)
+            islike = await User_recipe.findAll({
+                
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of lunch) {
+                item.dataValues.isLike = 0;
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
+              }
+            let dinner = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
+                where: {
+                    date:d, 
+                    idUser:acc.User.idUser, 
+                    filter:3,
+                },
+                include: [
+                    {
+                      model: Recipe,
+                      required: false,
+                      attributes: ['name','calories','image']
+                    }
+                  ]
+            });
+            id_Recipe= dinner.map(item=>item.idRecipe)
+            islike = await User_recipe.findAll({
+                
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of dinner) {
+                item.dataValues.isLike = 0;
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+                item.dataValues.name=item.dataValues.Recipe.name;
+                item.dataValues.calories=item.dataValues.Recipe.calories;
+                item.dataValues.image=item.dataValues.Recipe.image;
+                delete item.dataValues.Recipe;
+              }
+              res
+              .status(200)
+              .json({
+                breakfast, lunch, dinner
+              });
+        }
+        
     } catch (error) {
         res.status(500).json({
             message: 'Error'
