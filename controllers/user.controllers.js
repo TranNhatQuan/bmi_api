@@ -113,8 +113,10 @@ const getRecipeHistory = async (req,res) =>{
             res.status(200).json(recipe_his);
         }
         else{
-            const breakfast = await Recipe_history.findAll({
+            let breakfast = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
                 where: {
+                    
                     date:d, 
                     idUser:acc.User.idUser, 
                     filter:1,
@@ -123,11 +125,27 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image']
-                    }
+                      attributes: ['name','calories','image'],
+                    },
                   ]
             });
-            const lunch = await Recipe_history.findAll({
+            let id_Recipe= breakfast.map(item=>item.idRecipe)
+            let islike = await User_recipe.findAll({
+                
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of breakfast) {
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+              }
+            let lunch = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
                 where: {
                     date:d, 
                     idUser:acc.User.idUser, 
@@ -141,7 +159,23 @@ const getRecipeHistory = async (req,res) =>{
                     }
                   ]
             });
-            const dinner = await Recipe_history.findAll({
+            id_Recipe= lunch.map(item=>item.idRecipe)
+            islike = await User_recipe.findAll({
+                
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of lunch) {
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+              }
+            let dinner = await Recipe_history.findAll({
+                attributes: ['idRecipe'],
                 where: {
                     date:d, 
                     idUser:acc.User.idUser, 
@@ -155,6 +189,21 @@ const getRecipeHistory = async (req,res) =>{
                     }
                   ]
             });
+            id_Recipe= dinner.map(item=>item.idRecipe)
+            islike = await User_recipe.findAll({
+                
+                where: {
+                    idRecipe: {[Op.in]: id_Recipe
+                    },
+                    idUser:acc.User.idUser, 
+                },
+            });
+            for (let item of dinner) {
+                let like = islike.find(like => like.dataValues.idRecipe === item.dataValues.idRecipe);
+                if (like) {
+                  item.dataValues.isLike = like.dataValues.isLike;
+                }
+              }
             res
       .status(200)
       .json({
