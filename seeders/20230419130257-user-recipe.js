@@ -15,9 +15,51 @@ module.exports = {
       {
         idUser:3,
         idRecipe:1,
+        cmt: 'like',
         date: '2023-04-24 12:59:59',
         isLike:0,
-        
+      },
+      {
+        idUser: 3,
+        idRecipe: 2,
+        cmt: "love",
+        date: "2023-05-17 09:34:44",
+        isLike: 1
+      },
+      {
+        idUser: 3,
+        idRecipe: 3,
+        cmt: "dislike",
+        date: "2023-05-28 12:12:55",
+        isLike: 0
+      },
+      {
+        idUser: 3,
+        idRecipe: 4,
+        cmt: "neutral",
+        date: "2023-05-08 19:06:51",
+        isLike: 1
+      },
+      {
+        idUser: 3,
+        idRecipe: 5,
+        cmt: "like",
+        date: "2023-05-03 14:45:11",
+        isLike: 0
+      },
+      {
+        idUser: 3,
+        idRecipe: 6,
+        cmt: "hate",
+        date: "2023-05-29 23:59:59",
+        isLike: 1
+      },
+      {
+        idUser: 3,
+        idRecipe: 7,
+        cmt: "love",
+        date: "2023-05-15 08:30:22",
+        isLike: 0
       },
       {
         idUser:4,

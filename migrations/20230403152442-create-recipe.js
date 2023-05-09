@@ -24,15 +24,15 @@ module.exports = {
         allowNull: false,
       },
       proteins: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       fats: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       carbo: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       idType: {
