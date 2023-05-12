@@ -24,13 +24,20 @@ const getHistory = async (req,res) =>{
                 date:d, idUser:acc.User.idUser,
             },
         });
+        
         console.log(!u_history);
         if(!u_history){
+            let u_history_temp = await User_history.findOne({
+                where: {
+                 idUser:acc.User.idUser,
+                },
+            });
+
             u_history = await User_history.create({
                 idUser: acc.User.idUser,
-                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-                weight: 0,
-                height: 0,
+                date: d,
+                weight: u_history_temp.dataValues.weight,
+                height: u_history_temp.dataValues.height,
                 water: 0,
                 calories_in: 0,
                 calories_out: 0,
@@ -447,13 +454,38 @@ const editUser = async (req,res) =>{
                 idUser:acc.User.idUser,
             }
         });
-        await User_history.update({height :height,
-            weight :weight},{
-            where: { 
+        let user_his = await User_history.findOne({
+            where: {
+                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
                 idUser:acc.User.idUser,
-                date:  moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-            }
+            },
         });
+        if(!user_his){
+            let u_history_temp = await User_history.findOne({
+                where: {
+                 idUser:acc.User.idUser,
+                },
+            });
+
+            user_his = await User_history.create({
+                idUser: acc.User.idUser,
+                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                weight: u_history_temp.dataValues.weight,
+                height: u_history_temp.dataValues.height,
+                water: 0,
+                calories_in: 0,
+                calories_out: 0,
+            });
+        }
+        else{
+            await User_history.update({height :height,
+                weight :weight},{
+                where: { 
+                    idUser:acc.User.idUser,
+                    date:  moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                }
+            });
+        }
         res.status(200).json({
             message: 'Success'
         });
