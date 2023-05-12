@@ -27,8 +27,7 @@ const getAllexercise = async (req, res) => {
 }
 const getDetailexercise = async (req, res) => {
     const { id_exercise } = req.params;
-    console.log(id_exercise);
-    console.log(Object.values(id_exercise));
+    
     try {
         const details = await Exercise.sequelize.query(
             `call getDetailexercise(${id_exercise})`,
