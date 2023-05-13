@@ -126,7 +126,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image'],
+                      attributes:['name','calories','image','points'],
                     },
                   ]
             });
@@ -148,6 +148,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
             let lunch = await Recipe_history.findAll({
@@ -161,7 +162,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image']
+                      attributes: ['name','calories','image','points']
                     }
                   ]
             });
@@ -183,6 +184,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
             let dinner = await Recipe_history.findAll({
@@ -196,7 +198,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image']
+                      attributes: ['name','calories','image','points']
                     }
                   ]
             });
@@ -218,6 +220,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
               res
@@ -239,7 +242,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image'],
+                      attributes: ['name','calories','image','points']
                     },
                   ]
             });
@@ -261,6 +264,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
             let lunch = await Recipe_history.findAll({
@@ -274,7 +278,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image']
+                      attributes: ['name','calories','image','points']
                     }
                   ]
             });
@@ -296,6 +300,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
             let dinner = await Recipe_history.findAll({
@@ -309,7 +314,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image']
+                      attributes: ['name','calories','image','points']
                     }
                   ]
             });
@@ -331,6 +336,7 @@ const getRecipeHistory = async (req,res) =>{
                 item.dataValues.name=item.dataValues.Recipe.name;
                 item.dataValues.calories=item.dataValues.Recipe.calories;
                 item.dataValues.image=item.dataValues.Recipe.image;
+                item.dataValues.points=item.dataValues.Recipe.points;
                 delete item.dataValues.Recipe;
               }
               res

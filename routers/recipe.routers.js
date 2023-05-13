@@ -9,7 +9,7 @@ const { getInfoRecipe, getFavorite, getAllRecipe, getRecipeByTitle, likeRecipe, 
 
 const recipeRouter = express.Router();
 //lay day du thong tin mot mon an
-recipeRouter.get("/:idRecipe", authenticate, getInfoRecipe)
+recipeRouter.get("/info/:idRecipe", authenticate, getInfoRecipe)
 recipeRouter.put("/like", authenticate, likeRecipe)
 recipeRouter.put("/cmt/:idRecipe", authenticate, userCMT)
 recipeRouter.get("/cmt", authenticate, listCmtRecipe)
