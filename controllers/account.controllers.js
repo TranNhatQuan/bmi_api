@@ -188,7 +188,7 @@ const forgotPassword = async (req, res) => {
                 html: `Mã xác nhận của bạn là: ${randomID}`, // html body
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 isExist: true,
                 isSuccess: true,
                 message: `Mã xác minh đã được gửi về email: ${mail} vui lòng kiểm tra hòm thư!`,

@@ -276,15 +276,16 @@ function transformIdUsertoName(listCMT) {
   });
 }
 const getAllRecipeFilter = async (req, res) => {
-  console.log('test')
-  const calories = req.query.calories.split(',').map(Number);
-  const ingredient = req.query.ingredient.split(',').map(Number);
-  const limit = Number(req.query.limit);
-  const page = Number(req.query.page);
-  const limit_page = [limit * (page - 1), limit * page]
-  console.log(ingredient)
+  
+  
+  
 
   try {
+    const calories = req.query.calories.split(',').map(Number);
+    const ingredient = req.query.ingredient.split(',').map(Number);
+    const limit = Number(req.query.limit);
+    const page = Number(req.query.page);
+    const limit_page = [limit * (page - 1), limit * page]
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User
