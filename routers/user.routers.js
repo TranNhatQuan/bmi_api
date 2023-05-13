@@ -1,7 +1,7 @@
 const express = require("express");
 const { User } = require("../models")
 const { authenticate } = require("../middlewares/auth/authenticate.js")
-const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory,getUser,listUser,}
+const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory,getUser,listUser, editUserHistory,}
     = require("../controllers/user.controllers");
 
 const userRouter = express.Router();
@@ -30,6 +30,8 @@ userRouter.get("/detail/:idUser", getUser)
 //BE trả về list user gồm các thông tin id, name, bmi, gender 
 //+ biến maxPage cho biết nếu chia theo limit như vậy có tổng bao nhiêu page
 userRouter.get("/hwnet/list",authenticate, listUser)
+ //Sua du lieu user_his theo ngay
+userRouter.put("/edit/history/:date",authenticate, editUserHistory)
 module.exports = {
     userRouter,
 }
