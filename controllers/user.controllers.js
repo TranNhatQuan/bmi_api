@@ -509,15 +509,15 @@ const editUser = async (req, res) => {
             user_his = await User_history.create({
                 idUser: acc.User.idUser,
                 date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-                weight: u_history_temp.dataValues.weight,
-                height: u_history_temp.dataValues.height,
-                water: 0,
-                calories_in: 0,
-                calories_out: 0,
+                weight: weight,
+                height: height,
+                water: u_history_temp.dataValues.water,
+                calories_in: u_history_temp.dataValues.calories_in,
+                calories_out: u_history_temp.dataValues.calories_out,
             });
         }
         else {
-            await User_history.update({
+            user_his= await User_history.update({
                 height: height,
                 weight: weight
             }, {
@@ -728,5 +728,5 @@ const getInfo = async(req,res)=>{
 };
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,getInfo,editUserHistory
 };
