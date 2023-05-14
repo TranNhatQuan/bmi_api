@@ -68,8 +68,8 @@ const getInfoRecipe = async (req, res) => {
     }
     for(let item of recipe.dataValues.Recipe_ingredients){
       
-      item.dataValues.inName=item.dataValues.Ingredient.dataValues.inName;
-      item.dataValues.inImage=item.dataValues.Ingredient.dataValues.inImage;
+      item.dataValues.name=item.dataValues.Ingredient.dataValues.inName;
+      item.dataValues.image=item.dataValues.Ingredient.dataValues.inImage;
       delete item.dataValues.Ingredient;
     }
 
