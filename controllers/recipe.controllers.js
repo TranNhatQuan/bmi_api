@@ -66,7 +66,12 @@ const getInfoRecipe = async (req, res) => {
       recipe.dataValues.rank = 0;
       delete recipe.dataValues.Recipe_rank
     }
-
+    for(let item of recipe.dataValues.Recipe_ingredients){
+      
+      item.dataValues.inName=item.dataValues.Ingredient.dataValues.inName;
+      item.dataValues.inImage=item.dataValues.Ingredient.dataValues.inImage;
+      delete item.dataValues.Ingredient;
+    }
 
 
 
