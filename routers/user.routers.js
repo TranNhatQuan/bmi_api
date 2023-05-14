@@ -1,7 +1,7 @@
 const express = require("express");
 const { User } = require("../models")
 const { authenticate } = require("../middlewares/auth/authenticate.js")
-const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory,getUser,listUser, editUserHistory,}
+const { getRecommend, getAllhistory, getHistory, getInfoUser, editUser, editMenuUser,getRecipeHistory,getUser,listUser, editUserHistory,getInfo,}
     = require("../controllers/user.controllers");
 
 const userRouter = express.Router();
@@ -32,6 +32,8 @@ userRouter.get("/detail/:idUser", getUser)
 userRouter.get("/hwnet/list",authenticate, listUser)
  //Sua du lieu user_his theo ngay
 userRouter.put("/edit/history/:date",authenticate, editUserHistory)
+
+userRouter.get("/info/:date",authenticate, getInfo)
 module.exports = {
     userRouter,
 }

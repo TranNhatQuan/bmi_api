@@ -126,7 +126,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image'],
+                      attributes: ['name','calories','image','points'],
                     },
                   ]
             });
@@ -242,7 +242,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image'],
+                      attributes: ['name','calories','image','points']
                     },
                   ]
             });
@@ -659,7 +659,50 @@ const editUserHistory = async(req,res)=>{
     }
 };
 
+const getInfo = async(req,res)=>{
+    const date = req.params;
+    const d = date['date'];
+    try {
+        // const exercise1 = await Exercise.findAll();
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        let recipe_his = await Recipe_history.findAll({
+            attributes: ['idRecipe'],
+            where: { 
+                date:d, 
+                idUser:acc.User.idUser, 
+            },
+            include: [
+                {
+                  model: Recipe,
+                  required: false,
+                  attributes: ['calories','proteins','fats','carbo'],
+                },
+              ]
+        });
+        for (let item of recipe_his) {
+            item.dataValues.calories=item.dataValues.Recipe.calories;
+            item.dataValues.proteins=item.dataValues.Recipe.proteins;
+            item.dataValues.fats=item.dataValues.Recipe.fats;
+            item.dataValues.carbo=item.dataValues.Recipe.carbo;
+            delete item.dataValues.Recipe;
+          }
+          res
+              .status(200)
+              .json({
+                recipe_his
+              });
+
+    }catch{
+        res.status(500).json({
+            message: 'Error'
+        });
+    }
+
+};
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,editUserHistory,
+    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,editUserHistory,getInfo,
 };
