@@ -402,12 +402,6 @@ const editMenuUser = async (req,res) =>{
             },
         });
     }
-    // recipe_his = await Recipe_history.create({
-    //             idUser: acc.User.idUser,
-    //             date: d,
-    //             idRecipe: breakfast[0],
-    //             filter: 1,
-    //         });
         for (let x of breakfast) {
                 recipe_his = await Recipe_history.create({
                 idUser: acc.User.idUser,
@@ -549,20 +543,7 @@ const listUser = async (req,res) =>{
   const limit_page = [limit * (page - 1), limit * page]
 
     
-    // try {
-    //         const user = await User.sequelize.query(
-    //             `SELECT idUser , name,gender,weight,height, weight/((height/100)*(height/100)) as BMI FROM users
-    //             where weight/((height/100)*(height/100))<=${max} and weight/((height/100)*(height/100))>=${min} and isShare=1`,
-    //             {
-    //                 type: QueryTypes.SELECT,
-    //                 raw: true,
-    //             }
-    //         );
-    //         res.status(200).json(user); 
-
-//   } catch (error) {
-//     res.status(500).json({ isSuccess: false });
-//   }
+    
 try {
     const acc = await Account.findOne({
       where: { mail: req.mail },

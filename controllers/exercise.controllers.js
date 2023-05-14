@@ -86,30 +86,7 @@ const userLikeEx = async (req, res) => {
             include: User
         })
         console.log(acc.User.idUser, Object.values(isLike), Object.values(id_exercise));
-        // if (Object.values(isLike) == 1) {
-        //     console.log('true')
-        //     await User_exercise.query(
-        //         `update user_exercises set isLike=1 where idExercise='${Object.values(id_exercise)}' and idUser='${acc.User.id_user}'; `,
-        //         {
-        //             type: QueryTypes.UPDATE,
-        //             raw: true,
-        //         });
-        //     res.status(200).json({
-        //         message: 'Sucess'
-        //     });
-        // }
-        // else {
-        //     await User_exercise.query(
-        //         `update user_exercise set sisLike = ${Object.values(isLike)} where idExercise = ${Object.values(id_exercise)} and idUser = ${acc.User.idUser}`,
-        //         {
-        //             type: QueryTypes.UPDATE,
-        //             raw: true,
-        //         }
-        //     )
-        //     res.status(200).json({
-        //         message: 'Sucess'
-        //     });
-        // }
+        
         await User_exercise.query(
             `update user_exercises set isLike='${Object.values(isLike)}' where idExercise='${Object.values(id_exercise)}' and idUser='${acc.User.id_user}'; `,
             {
