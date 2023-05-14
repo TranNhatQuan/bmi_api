@@ -126,7 +126,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image','points'],
+                      attributes: ['name','calories','image'],
                     },
                   ]
             });
@@ -242,7 +242,7 @@ const getRecipeHistory = async (req,res) =>{
                     {
                       model: Recipe,
                       required: false,
-                      attributes: ['name','calories','image','points'],
+                      attributes: ['name','calories','image'],
                     },
                   ]
             });
