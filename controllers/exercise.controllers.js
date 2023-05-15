@@ -29,13 +29,12 @@ const getAllexercise = async (req, res) => {
 //Cần sửa lại function này cho phù hợp yêu cầu
 const getDetailexercise = async (req, res) => {
     const { id_exercise } = req.params;
-    console.log(id_exercise);
-    console.log(Object.values(id_exercise));
+
     try {
         const details = await Exercise.sequelize.query(
             `select e.name, s.index, m.name as menu_name, m.image as menu_image, m.video as menu_video, eq.name as equipment_name
             from exercises as e, sets as s, menus as m, equipment as eq, menu_equipments as me
-            where e.idExercise = ${id_exercise} and s.idSet = idExercise and s.idSet = m.idMenu and m.idMenu = me.idMenu and me.idMenu = eq.idEquipment;`,
+            where e.idExercise = ${id_exercise} and s.idSet = e.idExercise and s.idSet = m.idMenu and m.idMenu = me.idMenu and me.idMenu = eq.idEquipment`,
             {
                 // replacements:{}
                 type: QueryTypes.SELECT,
@@ -76,8 +75,15 @@ const userLikeEx = async (req, res) => {
                 }
             })
         )
-
-
+        await User_exercise.query(
+            `update user_exercises set isLike='${Object.values(isLike)}' where idExercise='${Object.values(id_exercise)}' and idUser='${acc.User.id_user}'; `,
+            {
+                type: QueryTypes.UPDATE,
+                raw: true,
+            });
+        res.status(200).json({
+            message: 'Sucess'
+        });
     } catch (error) {
         res.status(500).json({
             message: 'False'

@@ -9,7 +9,7 @@ const checkCreateAccount = (Model) => {
     if (!account) {
       next();
     } else {
-      res.status(400).json({ isExist: true, isSuccess:false });
+      res.status(409).json({ isExist: true, isSuccess:false });
     }
   };
 };
