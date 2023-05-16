@@ -97,17 +97,21 @@ const completeExercise = async (req, res) => {
         let success = 0;
         const acc = await Account.findOne({
             where: { mail: req.mail },
-            include: User
+            include: User, User_history
         })
-        let user_his = await User_history.findOne({
+        console.log(acc.User.idUser)
+        const user_his = await User_history.findOne({
             where: {
                 idUser: acc.User.idUser,
-                idExercise: id_exercise,
             }
         })
         let calo_out = await Exercise.findOne({
             where: { idExercise: id_exercise }
         })
+        if (!calo_out)
+            console.log("NULL")
+        else
+            console.log(calo_out.calories)
         if (user_his === null) {
             user_his = await User_history.create({
                 idUser: acc.User.idUser,
@@ -115,7 +119,7 @@ const completeExercise = async (req, res) => {
                 weight: 0,
                 height: 0,
                 calories_in: 0,
-                calories_out: calo_out.Exercise.idExercise,
+                calories_out: calo_out.calories,
                 water: 0,
 
             })
@@ -123,7 +127,7 @@ const completeExercise = async (req, res) => {
         }
         else {
             user_his = await User_history.update({
-                calories_out: calo_out.Exercise.idExercise,
+                calories_out: calo_out.calories,
             })
             success = 1;
 
