@@ -1,5 +1,5 @@
 const { QueryTypes } = require("sequelize");
-const { Exercise, User_exercise, User, Account } = require("../models");
+const { Exercise, User_exercise, User, Account, User_history } = require("../models");
 const { raw } = require("body-parser");
 
 // exerciseRouter.get("/", authenticate, getAllexercise);
@@ -92,41 +92,87 @@ const userLikeEx = async (req, res) => {
 };
 //Cần sửa lại function này cho phù hợp yêu cầu
 const completeExercise = async (req, res) => {
-    const { id_exercise } = req.body;
+    const { id_exercise } = req.params;
     try {
+        let success = 0;
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
         })
-
-        const calo = await Exercise.findOne({ attributes: ['calories'] }, {
-            where: {
-                idExercise: Object.values(id_exercise),
-            }
-        }
-        )
-        await User_history.update({ calories_out: calories_out + calo.dataValues() }, {
+        let user_his = await User_history.findOne({
             where: {
                 idUser: acc.User.idUser,
+                idExercise: id_exercise,
             }
-        }
+        })
+        let calo_out = await Exercise.findOne({
+            where: { idExercise: id_exercise }
+        })
+        if (user_his === null) {
+            user_his = await User_history.create({
+                idUser: acc.User.idUser,
+                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                weight: 0,
+                height: 0,
+                calories_in: 0,
+                calories_out: calo_out.Exercise.idExercise,
+                water: 0,
 
-        )
-        res.status(200).json({
-            message: 'True'
-        });
-        // res.status(200).json({
-        //     message: 'Sucess'
-        // });
+            })
+            success = 1;
+        }
+        else {
+            user_his = await User_history.update({
+                calories_out: calo_out.Exercise.idExercise,
+            })
+            success = 1;
+
+        }
+        res.status(200).json(success);
     } catch (error) {
         res.status(500).json({
             message: 'False'
         })
     }
 };
-const getCmtEx = (req, res) => { }
-
-const getTopEx = (req, res) => { }
+const putCmtEx = async (req, res) => {
+    const { id_exercise } = req.params;
+    let { cmt } = req.body;
+    try {
+        const acc = Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        const user_ex = User_exercise.findOne({
+            where: {
+                idExercise: id_exercise,
+                idUser: acc.User.idUser,
+            }
+        })
+        if (user_ex === null) {
+            user_ex = await User_exercise.create({
+                idUser: acc.User.idUser,
+                idExercise: id_exercise,
+                cmt: cmt,
+                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                isLike: 0,
+            });
+            res.status(user_ex);
+            let success = 1;
+            res.status(200).json({ success })
+        } else {
+            user_ex = await User_exercise.update({
+                cmt: cmt,
+                isLike: 1,
+            })
+            let success = 1;
+            res.status(200).json({ success })
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Failed' });
+    }
+}
+const getTopEx = async (req, res) => { }
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, completeExercise, getCmtEx, getTopEx
+    getAllexercise, getDetailexercise, userLikeEx, completeExercise, putCmtEx, getTopEx
 }
