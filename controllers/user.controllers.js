@@ -2,11 +2,11 @@ const { Recipe, User_history, Recipe_history, Account, User, Sequelize, Userswit
 const moment = require('moment'); // require
 const { Op } = require("sequelize");
 const { QueryTypes, DATEONLY, DATE } = require("sequelize");
- async function  calcCaloriesIn(date, idUser) {
-    
+async function calcCaloriesIn(date, idUser) {
+
     let menu = await Recipe_history.findAll({
-        where:{date: date, idUser: idUser},
-        attributes:['idRecipe'],
+        where: { date: date, idUser: idUser },
+        attributes: ['idRecipe'],
         include: [
             {
                 model: Recipe,
@@ -15,13 +15,13 @@ const { QueryTypes, DATEONLY, DATE } = require("sequelize");
             },
         ],
     })
-    
+
     let calo = 0;
-    for(item of menu){
-        calo+=Number(item.Recipe.dataValues.calories)
+    for (item of menu) {
+        calo += Number(item.Recipe.dataValues.calories)
     }
     return calo
-  }
+}
 
 const getHistory = async (req, res) => {
 
@@ -39,7 +39,7 @@ const getHistory = async (req, res) => {
             },
         });
 
-        
+
         if (!u_history) {
             let u_history_temp = await User_history.findOne({
                 where: {
@@ -58,9 +58,9 @@ const getHistory = async (req, res) => {
             });
             console.log(u_history);
         }
-        else{
-            if(d>=now){
-                u_history.calories_in=await calcCaloriesIn(d, acc.User.idUser);
+        else {
+            if (d >= now) {
+                u_history.calories_in = await calcCaloriesIn(d, acc.User.idUser);
                 await u_history.save();
             }
         }
@@ -68,7 +68,7 @@ const getHistory = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            isSuccess:false
+            isSuccess: false
         });
     }
 };
@@ -113,27 +113,30 @@ const getRecipeHistory = async (req, res) => {
             },
         });
         if (!recipe_his && d >= now) {
-            let randomID = Math.floor(Math.random() * (22));
-            recipe_his = await Recipe_history.create({
-                idUser: acc.User.idUser,
-                date: d,
-                idRecipe: randomID,
-                filter: 1,
-            });
-            randomID = Math.floor(Math.random() * (22));
-            recipe_his = await Recipe_history.create({
-                idUser: acc.User.idUser,
-                date: d,
-                idRecipe: randomID,
-                filter: 2,
-            });
-            randomID = Math.floor(Math.random() * (22));
-            recipe_his = await Recipe_history.create({
-                idUser: acc.User.idUser,
-                date: d,
-                idRecipe: randomID,
-                filter: 3,
-            });
+            for (let i = 0; i < 2; i++) {
+                let randomID = Math.floor(Math.random() * (22));
+                recipe_his = await Recipe_history.create({
+                    idUser: acc.User.idUser,
+                    date: d,
+                    idRecipe: randomID,
+                    filter: 1,
+                });
+                randomID = Math.floor(Math.random() * (22));
+                recipe_his = await Recipe_history.create({
+                    idUser: acc.User.idUser,
+                    date: d,
+                    idRecipe: randomID,
+                    filter: 2,
+                });
+                randomID = Math.floor(Math.random() * (22));
+                recipe_his = await Recipe_history.create({
+                    idUser: acc.User.idUser,
+                    date: d,
+                    idRecipe: randomID,
+                    filter: 3,
+                });
+              }
+            
             let breakfast = await Recipe_history.findAll({
                 attributes: ['idRecipe'],
                 where: {
@@ -144,9 +147,9 @@ const getRecipeHistory = async (req, res) => {
                 },
                 include: [
                     {
-                      model: Recipe,
-                      required: false,
-                      attributes:['name','calories','image','points'],
+                        model: Recipe,
+                        required: false,
+                        attributes: ['name', 'calories', 'image', 'points'],
                     },
                 ]
             });
@@ -386,14 +389,10 @@ const getInfoUser = async (req, res) => {
             include: User
         });
         console.log(acc.User.idUser);
-        const user_h = await User_history.sequelize.query(
-            `select users.idUser,name,gender,user_histories.height,user_histories.weight  from user_histories inner join users on user_histories.idUser = users.idUser
-            where user_histories.idUser = ${acc.User.idUser} and  user_histories.date = CURRENT_DATE()`,
-            {
-                type: QueryTypes.SELECT,
-                raw: true,
-            }
-        );
+        const user_h = await User.findOne({
+            where:acc.User.idUser,
+            attributes: ['idUser', 'name', 'gender', 'weight', 'height', 'isShare'],
+        })
         res.status(200).json(user_h);
     } catch (error) {
         res.status(500).json({
@@ -474,7 +473,7 @@ const editMenuUser = async (req, res) => {
 };
 
 const editUser = async (req, res) => {
-    const { name, gender, height, weight, isshare } = req.body;
+    const { name, gender, height, weight, isShare } = req.body;
     try {
         const acc = await Account.findOne({
             where: { mail: req.mail },
@@ -487,7 +486,7 @@ const editUser = async (req, res) => {
             gender: gender,
             height: height,
             weight: weight,
-            isShare: isshare
+            isShare: isShare
         }, {
             where: {
                 idUser: acc.User.idUser,
@@ -517,7 +516,7 @@ const editUser = async (req, res) => {
             });
         }
         else {
-            user_his= await User_history.update({
+            user_his = await User_history.update({
                 height: height,
                 weight: weight
             }, {
@@ -541,13 +540,21 @@ const getUser = async (req, res) => {
     const id = idUser['idUser'];
     console.log(idUser);
     try {
-        const user = await Userswithbmi.findAll({
+        const user = await Userswithbmi.findOne({
             where: {
                 idUser: id,
             },
         });
+        user_date = await User_history.findOne({
+            where: {
+                idUser: id,
+            },
+            attributes:['date']
+        });
+        user.dataValues.date=user_date.dataValues.date;
+        // delete user.dataValues.User_history;
         const user_recipe = await User_recipe.sequelize.query(
-            `select user_recipes.idRecipe,name,calories,image,cmt from user_recipes inner join recipes
+            `select user_recipes.idRecipe,name,calories,image,cmt,isLike from user_recipes inner join recipes
             on user_recipes.idRecipe= recipes.idRecipe 
             where user_recipes.idUser=${id} and isLike=1`,
             {
@@ -556,7 +563,7 @@ const getUser = async (req, res) => {
             }
         );
         const user_ex = await User_exercise.sequelize.query(
-            `select user_exercises.idExercise,name,calories,image,cmt from user_exercises inner join exercises
+            `select user_exercises.idExercise,name,calories,image,cmt,isLike from user_exercises inner join exercises
             on user_exercises.idExercise= exercises.idExercise
             where user_exercises.idUser=${id} and isLike=1`,
             {
@@ -629,61 +636,49 @@ const listUser = async (req, res) => {
         res.status(500).json({ isSuccess: false });
     }
 };
-const editUserHistory = async(req,res)=>{
-    const date = req.params;
-    const d = date['date']
-    const { weight,height,calories_in,calories_out,water } = req.body;
-    const acc = await Account.findOne({
-        where: { mail: req.mail },
-        include: User
-    });
+const editUserHistory = async (req, res) => {
+
 
     try {
-        let user_his = await  User_history.findOne({
+        const date = req.params;
+        const d = date['date']
+        const { water } = req.body;
+        console.log(water)
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        });
+        let user_his = await User_history.findOne({
             where:
             {
                 date: d,
-                idUser:acc.User.idUser,
+                idUser: acc.User.idUser,
             }
         });
+        //console.log(user_his)
         if(!user_his){
-            user_his = await User_history.create({
-                idUser: acc.User.idUser,
-                date: d,
-                weight: weight,
-                height: height,
-                water: water,
-                calories_in: calories_in,
-                calories_out: calories_out,
+            return res.status(404).json({
+                isSuccess:false
             });
-            res.status(200).json(user_his);
         }
-        else{
-            user_his = await User_history.update({
-                height :height,
-                weight :weight,
-                calories_in:calories_in,
-                calories_out:calories_out,
-                water:water
-            },{
-                where: { 
-                    idUser:acc.User.idUser,
-                    date:  d,
-                }
-            });
-           
-            res.status(200).json({
-                message: 'Success'});
-        }
-        
-    } catch{
+
+        user_his.water = water;
+        await user_his.save();
+
+        res.status(200).json({
+            isSuccess:true,
+            user_his
+        });
+
+
+    } catch {
         res.status(500).json({
-            message: 'Error'
+            isSuccess:false
         });
     }
 };
 
-const getInfo = async(req,res)=>{
+const getInfo = async (req, res) => {
     const date = req.params;
     const d = date['date'];
     try {
@@ -694,32 +689,32 @@ const getInfo = async(req,res)=>{
         });
         let recipe_his = await Recipe_history.findAll({
             attributes: ['idRecipe'],
-            where: { 
-                date:d, 
-                idUser:acc.User.idUser, 
+            where: {
+                date: d,
+                idUser: acc.User.idUser,
             },
             include: [
                 {
-                  model: Recipe,
-                  required: false,
-                  attributes: ['calories','proteins','fats','carbo'],
+                    model: Recipe,
+                    required: false,
+                    attributes: ['calories', 'proteins', 'fats', 'carbo'],
                 },
-              ]
+            ]
         });
         for (let item of recipe_his) {
-            item.dataValues.calories=item.dataValues.Recipe.calories;
-            item.dataValues.proteins=item.dataValues.Recipe.proteins;
-            item.dataValues.fats=item.dataValues.Recipe.fats;
-            item.dataValues.carbo=item.dataValues.Recipe.carbo;
+            item.dataValues.calories = item.dataValues.Recipe.calories;
+            item.dataValues.proteins = item.dataValues.Recipe.proteins;
+            item.dataValues.fats = item.dataValues.Recipe.fats;
+            item.dataValues.carbo = item.dataValues.Recipe.carbo;
             delete item.dataValues.Recipe;
-          }
-          res
-              .status(200)
-              .json({
+        }
+        res
+            .status(200)
+            .json({
                 recipe_his
-              });
+            });
 
-    }catch{
+    } catch {
         res.status(500).json({
             message: 'Error'
         });
@@ -728,5 +723,5 @@ const getInfo = async(req,res)=>{
 };
 module.exports = {
     // getDetailTaiKhoan,
-    getAllhistory,getHistory,getRecipeHistory,getInfoUser,editMenuUser,editUser,getUser,listUser,getInfo,editUserHistory
+    getAllhistory, getHistory, getRecipeHistory, getInfoUser, editMenuUser, editUser, getUser, listUser, getInfo, editUserHistory
 };

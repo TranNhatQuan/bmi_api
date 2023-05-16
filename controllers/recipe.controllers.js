@@ -350,7 +350,7 @@ const getAllRecipeFilter = async (req, res) => {
 
     let recipes = result.rows;
     let recipeJson = JSON.stringify(recipes)
-    console.log(recipeJson)
+    
     recipeJson = transformRecipes(JSON.parse(recipeJson))
     res
       .status(200)
