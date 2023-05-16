@@ -13,7 +13,7 @@ const { getAllexercise, getDetailexercise, createexercise, updateexercise, delet
 const { checkCreateexercise, checkexerciseValue } = require("../middlewares/validates/checkCreate.js");
 const exerciseRouter = express.Router();
 
-exerciseRouter.get("/page", authenticate, getAllexercise);
+exerciseRouter.get("/page/:level", authenticate, getAllexercise);
 // exerciseRouter.get("/", authenticate, getAllexercise);
 // // lay tat thong tin cua 1 bai tap gom cac set, rep, equipment theo 
 exerciseRouter.get("/detail/:id_exercise", authenticate, getDetailexercise);
@@ -22,7 +22,7 @@ exerciseRouter.get("/detail/:id_exercise", authenticate, getDetailexercise);
 // //Nguoi dung an like 1 exercise thi luu ve bang user_exercise voi isLike 1
 exerciseRouter.put("/like/", authenticate, userLikeEx);
 //Nguoi dung hoan thanh 1 bai tap thi tru calories cua nguoi dung trong history cua ngay do
-exerciseRouter.put("/check", authenticate, completeExercise)
+exerciseRouter.put("/check", authenticate, completeExercise);
 // //tam choi chua lam cac phan co auth 1
 // exerciseRouter.post("/create", authenticate, authorize(["1"]), checkCreateexercise(exercise), checkexerciseValue(exercise), createexercise);
 // exerciseRouter.put("/update/:id_exercise", authenticate, authorize(["1"]), checkexerciseValue(exercise), updateexercise);
