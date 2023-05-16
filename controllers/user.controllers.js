@@ -541,13 +541,21 @@ const getUser = async (req, res) => {
     const id = idUser['idUser'];
     console.log(idUser);
     try {
-        const user = await Userswithbmi.findAll({
+        const user = await Userswithbmi.findOne({
             where: {
                 idUser: id,
             },
         });
+        user_date = await User_history.findOne({
+            where: {
+                idUser: id,
+            },
+            attributes:['date']
+        });
+        user.dataValues.date=user_date.dataValues.date;
+        // delete user.dataValues.User_history;
         const user_recipe = await User_recipe.sequelize.query(
-            `select user_recipes.idRecipe,name,calories,image,cmt from user_recipes inner join recipes
+            `select user_recipes.idRecipe,name,calories,image,cmt,isLike from user_recipes inner join recipes
             on user_recipes.idRecipe= recipes.idRecipe 
             where user_recipes.idUser=${id} and isLike=1`,
             {
@@ -556,7 +564,7 @@ const getUser = async (req, res) => {
             }
         );
         const user_ex = await User_exercise.sequelize.query(
-            `select user_exercises.idExercise,name,calories,image,cmt from user_exercises inner join exercises
+            `select user_exercises.idExercise,name,calories,image,cmt,isLike from user_exercises inner join exercises
             on user_exercises.idExercise= exercises.idExercise
             where user_exercises.idUser=${id} and isLike=1`,
             {
