@@ -1,4 +1,6 @@
 const { QueryTypes } = require("sequelize");
+
+const moment = require('moment'); // require
 const { Exercise, User_exercise, User, Account, User_history } = require("../models");
 const { raw } = require("body-parser");
 
@@ -92,88 +94,86 @@ const userLikeEx = async (req, res) => {
 };
 //Cần sửa lại function này cho phù hợp yêu cầu
 const completeExercise = async (req, res) => {
-    const { id_exercise } = req.params;
+
     try {
-        let success = 0;
+        
+        const { id_exercise } = req.params;
+        console.log(id_exercise)
+        let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+        console.log('test')
+        console.log(now)
         const acc = await Account.findOne({
             where: { mail: req.mail },
-            include: User, User_history
+            include: User
         })
         console.log(acc.User.idUser)
-        const user_his = await User_history.findOne({
+        let user_his = await User_history.findOne({
             where: {
                 idUser: acc.User.idUser,
+                date: now,
             }
         })
         let calo_out = await Exercise.findOne({
             where: { idExercise: id_exercise }
         })
-        if (!calo_out)
-            console.log("NULL")
-        else
-            console.log(calo_out.calories)
-        if (user_his === null) {
-            user_his = await User_history.create({
-                idUser: acc.User.idUser,
-                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-                weight: 0,
-                height: 0,
-                calories_in: 0,
-                calories_out: calo_out.calories,
-                water: 0,
-
+        console.log(now)
+        if (user_his===null) {
+            res.status(404).json({
+                success:false
             })
-            success = 1;
+        } else {
+            user_his.calories_out = calo_out.dataValues.calories
+        user_his.save()
         }
-        else {
-            user_his = await User_history.update({
-                calories_out: calo_out.calories,
-            })
-            success = 1;
 
-        }
-        res.status(200).json(success);
+        
+        
+
+
+        res.status(200).json({success:true, user_his});
     } catch (error) {
         res.status(500).json({
-            message: 'False'
+            success:false
         })
     }
 };
 const putCmtEx = async (req, res) => {
-    const { id_exercise } = req.params;
-    let { cmt } = req.body;
+    
     try {
-        const acc = Account.findOne({
+        const { id_exercise } = req.params;
+        let { cmt } = req.body;
+        console.log(cmt)
+        const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
         });
-        const user_ex = User_exercise.findOne({
+        console.log(acc)
+        let user_ex =await User_exercise.findOne({
             where: {
                 idExercise: id_exercise,
                 idUser: acc.User.idUser,
             }
         })
+        console.log(user_ex)
         if (user_ex === null) {
+            console.log('testNull')
             user_ex = await User_exercise.create({
                 idUser: acc.User.idUser,
                 idExercise: id_exercise,
                 cmt: cmt,
-                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                date:moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
                 isLike: 0,
             });
-            res.status(user_ex);
-            let success = 1;
-            res.status(200).json({ success })
+            
+            return res.status(200).json({ iSsuccess:true })
         } else {
-            user_ex = await User_exercise.update({
-                cmt: cmt,
-                isLike: 1,
-            })
-            let success = 1;
-            res.status(200).json({ success })
+            user_ex.cmt=cmt;
+            await user_ex.save()
+            
+            return res.status(200).json({user_ex, iSsuccess:true })
         }
     } catch (error) {
-        res.status(500).json({ message: 'Failed' });
+        res.status(500).json({ isSuccess:false });
     }
 }
 const getTopEx = async (req, res) => { }
