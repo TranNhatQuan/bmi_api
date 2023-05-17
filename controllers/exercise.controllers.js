@@ -1,11 +1,13 @@
 const { QueryTypes } = require("sequelize");
 
 const moment = require('moment'); // require
-const { Exercise, User_exercise, User, Account, User_history } = require("../models");
+const { Exercise, User_exercise, User,Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
+const MySet = require('../models').Set;
 const { raw } = require("body-parser");
 
+
 // exerciseRouter.get("/", authenticate, getAllexercise);
-// //lay tat thong tin cua 1 bai tap gom cac set, rep, equipment
+// //lay tat thong tin cua 1 bai tap gom cac MySet, rep, equipment
 
 const getAllexercise = async (req, res) => {
     const { level } = req.params;
@@ -30,24 +32,100 @@ const getAllexercise = async (req, res) => {
 }
 //Cần sửa lại function này cho phù hợp yêu cầu
 const getDetailexercise = async (req, res) => {
-    const { id_exercise } = req.params;
+
 
     try {
-        const details = await Exercise.sequelize.query(
-            `select e.name, s.index, m.name as menu_name, m.image as menu_image, m.video as menu_video, eq.name as equipment_name
-            from exercises as e, sets as s, menus as m, equipment as eq, menu_equipments as me
-            where e.idExercise = ${id_exercise} and s.idSet = e.idExercise and s.idSet = m.idMenu and m.idMenu = me.idMenu and me.idMenu = eq.idEquipment`,
+        const { id_exercise } = req.params;
+        const acc = await Account.findOne({
+            where: { mail: req.mail },
+            include: User
+        })
+        
+        let details = await Exercise.findOne({
+            where: {
+                idExercise: id_exercise,
+            },
+            //raw : true,
+            nest: true,
+            include: [
+                {
+                model: MySet,
+                required: false,
+                include: [{
+                    model: Menu,
+                    required: false,
+                    include: [{
+                        model: Menu_equipment,
+                        required: false,
+                        
+                    }]
+                }]
+            },
+            
             {
-                // replacements:{}
-                type: QueryTypes.SELECT,
-                raw: true,
-                // nest: true,
+                model: User_exercise,
+                where: { idUser: acc.User.idUser },
+                required: false,
+                attributes: ['isLike']
+            },
+            {
+                model: Exercise_rank,
+                
+                required: false,
+                attributes: ['rank']
+            },
+            ],
+
+            
+        });
+        //let equipmentSet = new Set([Equipment]);
+        //console.log(equipmentSet)
+        
+        let set = new Set();
+        let equipments=[]
+        for(let item of details.Sets){
+            
+            for(let item1 of item.Menus){
+                
+                for(let item2 of item1.Menu_equipments){
+                    
+                    let equipment = await Equipment.findOne({
+                        where:{idEquipment: item2.idEquipment}
+                        
+                    });
+
+                    if (equipment) {
+                        let index = equipments.findIndex(
+                          e => e.idEquipment === equipment.idEquipment
+                        );
+                        if (index === -1) {
+                          equipments.push(equipment);
+                        }
+                      }
+                    
+                    
+                }
             }
-        );
-        res.status(200).json(details);
+            
+            
+          }
+        details.dataValues.equipments = equipments
+        if (details.dataValues.User_exercises[0]) {
+            details.dataValues.isLike = details.dataValues.User_exercises[0].isLike
+            delete details.dataValues.User_exercises
+        }
+        if (details.dataValues.Exercise_ranks) {
+            details.dataValues.rank = details.dataValues.Exercise_ranks.rank
+            delete details.dataValues.Exercise_ranks
+          }
+          else {
+            details.dataValues.rank = 0;
+            delete details.dataValues.Exercise_ranks
+          }
+        res.status(200).json({details});
     } catch (error) {
         res.status(500).json({
-            message: 'False'
+            error
         });
     }
 };
@@ -96,7 +174,7 @@ const userLikeEx = async (req, res) => {
 const completeExercise = async (req, res) => {
 
     try {
-        
+
         const { id_exercise } = req.params;
         console.log(id_exercise)
         let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
@@ -117,28 +195,28 @@ const completeExercise = async (req, res) => {
             where: { idExercise: id_exercise }
         })
         console.log(now)
-        if (user_his===null) {
+        if (user_his === null) {
             res.status(404).json({
-                success:false
+                success: false
             })
         } else {
             user_his.calories_out = calo_out.dataValues.calories
-        user_his.save()
+            user_his.save()
         }
 
-        
-        
 
 
-        res.status(200).json({success:true, user_his});
+
+
+        res.status(200).json({ success: true, user_his });
     } catch (error) {
         res.status(500).json({
-            success:false
+            success: false
         })
     }
 };
 const putCmtEx = async (req, res) => {
-    
+
     try {
         const { id_exercise } = req.params;
         let { cmt } = req.body;
@@ -148,7 +226,7 @@ const putCmtEx = async (req, res) => {
             include: User
         });
         console.log(acc)
-        let user_ex =await User_exercise.findOne({
+        let user_ex = await User_exercise.findOne({
             where: {
                 idExercise: id_exercise,
                 idUser: acc.User.idUser,
@@ -161,19 +239,19 @@ const putCmtEx = async (req, res) => {
                 idUser: acc.User.idUser,
                 idExercise: id_exercise,
                 cmt: cmt,
-                date:moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
+                date: moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
                 isLike: 0,
             });
-            
-            return res.status(200).json({ iSsuccess:true })
+
+            return res.status(200).json({ iSsuccess: true })
         } else {
-            user_ex.cmt=cmt;
+            user_ex.cmt = cmt;
             await user_ex.save()
-            
-            return res.status(200).json({user_ex, iSsuccess:true })
+
+            return res.status(200).json({ user_ex, iSsuccess: true })
         }
     } catch (error) {
-        res.status(500).json({ isSuccess:false });
+        res.status(500).json({ isSuccess: false });
     }
 }
 const getTopEx = async (req, res) => { }
