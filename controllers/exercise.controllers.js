@@ -1,23 +1,25 @@
 const { QueryTypes } = require("sequelize");
 
 const moment = require('moment'); // require
-<<<<<<< HEAD
+
 const { Exercise, User_exercise, User, Account, User_history, sequelize } = require("../models");
-=======
-const { Exercise, User_exercise, User,Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
+
+const { Exercise, User_exercise, User, Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
 const MySet = require('../models').Set;
->>>>>>> 273300e8081a6b735da8e5edb9d8101433e501fd
+const { raw } = require("body-parser");
+const { Exercise, User_exercise, User, Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
+const MySet = require('../models').Set;
 const { raw } = require("body-parser");
 
 
 // exerciseRouter.get("/", authenticate, getAllexercise);
-<<<<<<< HEAD
-// //lay tat thong tin cua 1 bai tap gom cac set, rep, equipment
-//Đã làm xong
-=======
 // //lay tat thong tin cua 1 bai tap gom cac MySet, rep, equipment
 
->>>>>>> 273300e8081a6b735da8e5edb9d8101433e501fd
+// exerciseRouter.get("/", authenticate, getAllexercise);
+// //lay tat thong tin cua 1 bai tap gom cac set, rep, equipment
+//Đã làm xong
+// //lay tat thong tin cua 1 bai tap gom cac MySet, rep, equipment
+
 const getAllexercise = async (req, res) => {
     const { level } = req.params;
     try {
@@ -49,7 +51,7 @@ const getDetailexercise = async (req, res) => {
             where: { mail: req.mail },
             include: User
         })
-        
+
         let details = await Exercise.findOne({
             where: {
                 idExercise: id_exercise,
@@ -58,66 +60,66 @@ const getDetailexercise = async (req, res) => {
             nest: true,
             include: [
                 {
-                model: MySet,
-                required: false,
-                include: [{
-                    model: Menu,
+                    model: MySet,
                     required: false,
                     include: [{
-                        model: Menu_equipment,
+                        model: Menu,
                         required: false,
-                        
+                        include: [{
+                            model: Menu_equipment,
+                            required: false,
+
+                        }]
                     }]
-                }]
-            },
-            
-            {
-                model: User_exercise,
-                where: { idUser: acc.User.idUser },
-                required: false,
-                attributes: ['isLike']
-            },
-            {
-                model: Exercise_rank,
-                
-                required: false,
-                attributes: ['rank']
-            },
+                },
+
+                {
+                    model: User_exercise,
+                    where: { idUser: acc.User.idUser },
+                    required: false,
+                    attributes: ['isLike']
+                },
+                {
+                    model: Exercise_rank,
+
+                    required: false,
+                    attributes: ['rank']
+                },
             ],
 
-            
+
         });
         //let equipmentSet = new Set([Equipment]);
         //console.log(equipmentSet)
-        
+
         let set = new Set();
-        let equipments=[]
-        for(let item of details.Sets){
-            
-            for(let item1 of item.Menus){
-                
-                for(let item2 of item1.Menu_equipments){
-                    
+        let equipments = []
+        for (let item of details.Sets) {
+
+            for (let item1 of item.Menus) {
+
+                for (let item2 of item1.Menu_equipments) {
+
                     let equipment = await Equipment.findOne({
-                        where:{idEquipment: item2.idEquipment}
-                        
+                        where: { idEquipment: item2.idEquipment }
+
                     });
 
                     if (equipment) {
                         let index = equipments.findIndex(
-                          e => e.idEquipment === equipment.idEquipment
+                            e => e.idEquipment === equipment.idEquipment
                         );
                         if (index === -1) {
-                          equipments.push(equipment);
+                            equipments.push(equipment);
                         }
-                      }
-                    
-                    
+                    }
+
+
                 }
             }
-            
-            
-          }
+
+
+        }
         details.dataValues.equipments = equipments
         if (details.dataValues.User_exercises[0]) {
             details.dataValues.isLike = details.dataValues.User_exercises[0].isLike
@@ -126,18 +128,115 @@ const getDetailexercise = async (req, res) => {
         if (details.dataValues.Exercise_ranks) {
             details.dataValues.rank = details.dataValues.Exercise_ranks.rank
             delete details.dataValues.Exercise_ranks
-          }
-          else {
+        }
+        else {
             details.dataValues.rank = 0;
             delete details.dataValues.Exercise_ranks
-          }
-        res.status(200).json({details});
+        }
+        res.status(200).json({ details });
     } catch (error) {
         res.status(500).json({
             error
         });
     }
 };
+//Cần viết lại function này
+// const userLikeEx = async (req, res) => {
+//     const { isLike, id_exercise } = req.body;
+//     try {
+//         const acc = await Account.findOne({
+//             where: { mail: req.mail },
+//             include: User
+//         })
+
+//         let details = await Exercise.findOne({
+//             where: {
+//                 idExercise: id_exercise,
+//             },
+//             //raw : true,
+//             nest: true,
+//             include: [
+//                 {
+//                 model: MySet,
+//                 required: false,
+//                 include: [{
+//                     model: Menu,
+//                     required: false,
+//                     include: [{
+//                         model: Menu_equipment,
+//                         required: false,
+
+//                     }]
+//                 }]
+//             },
+
+//             {
+//                 model: User_exercise,
+//                 where: { idUser: acc.User.idUser },
+//                 required: false,
+//                 attributes: ['isLike']
+//             },
+//             {
+//                 model: Exercise_rank,
+
+//                 required: false,
+//                 attributes: ['rank']
+//             },
+//             ],
+
+
+//         });
+//         //let equipmentSet = new Set([Equipment]);
+//         //console.log(equipmentSet)
+
+//         let set = new Set();
+//         let equipments=[]
+//         for(let item of details.Sets){
+
+//             for(let item1 of item.Menus){
+
+//                 for(let item2 of item1.Menu_equipments){
+
+//                     let equipment = await Equipment.findOne({
+//                         where:{idEquipment: item2.idEquipment}
+
+//                     });
+
+//                     if (equipment) {
+//                         let index = equipments.findIndex(
+//                           e => e.idEquipment === equipment.idEquipment
+//                         );
+//                         if (index === -1) {
+//                           equipments.push(equipment);
+//                         }
+//                       }
+
+
+//                 }
+//             }
+
+
+//           }
+//         details.dataValues.equipments = equipments
+//         if (details.dataValues.User_exercises[0]) {
+//             details.dataValues.isLike = details.dataValues.User_exercises[0].isLike
+//             delete details.dataValues.User_exercises
+//         }
+//         if (details.dataValues.Exercise_ranks) {
+//             details.dataValues.rank = details.dataValues.Exercise_ranks.rank
+//             delete details.dataValues.Exercise_ranks
+//           }
+//           else {
+//             details.dataValues.rank = 0;
+//             delete details.dataValues.Exercise_ranks
+//           }
+//         res.status(200).json({details});
+//     } catch (error) {
+//         res.status(500).json({
+//             error
+//         });
+//     }
+// };
 //Đã làm xong
 const userLikeEx = async (req, res) => {
     try {
@@ -221,7 +320,6 @@ const completeExercise = async (req, res) => {
         let calo_out = await Exercise.findOne({
             where: { idExercise: id_exercise }
         })
-<<<<<<< HEAD
         if (user_his === null) {
             user_his = await User_history.create({
                 idUser: acc.User.idUser,
@@ -240,24 +338,24 @@ const completeExercise = async (req, res) => {
             user_his.calories_out = user_his.calories_out + calo_out.dataValues.calories
             user_his.save()
         }
-=======
         console.log(now)
         if (user_his === null) {
             return res.status(404).json({
                 success: false
             })
         } else {
-            
-            user_his.calories_out =await user_his.dataValues.calories_out + calo_out.dataValues.calories
-            await user_his.save()
+            console.log(now)
+            if (user_his === null) {
+                return res.status(404).json({
+                    success: false
+                })
+            } else {
+
+                user_his.calories_out = await user_his.dataValues.calories_out + calo_out.dataValues.calories
+                await user_his.save()
+            }
+            res.status(200).json({ success: true, user_his });
         }
-
-
-
-
-
->>>>>>> 273300e8081a6b735da8e5edb9d8101433e501fd
-        res.status(200).json({ success: true, user_his });
     } catch (error) {
         res.status(500).json({
             success: false
@@ -296,10 +394,6 @@ const putCmtEx = async (req, res) => {
         } else {
             user_ex.cmt = cmt;
             await user_ex.save()
-<<<<<<< HEAD
-=======
-
->>>>>>> 273300e8081a6b735da8e5edb9d8101433e501fd
             return res.status(200).json({ user_ex, iSsuccess: true })
         }
     } catch (error) {
