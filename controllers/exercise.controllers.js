@@ -2,11 +2,6 @@ const { QueryTypes } = require("sequelize");
 
 const moment = require('moment'); // require
 
-const { Exercise, User_exercise, User, Account, User_history, sequelize } = require("../models");
-
-const { Exercise, User_exercise, User, Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
-const MySet = require('../models').Set;
-const { raw } = require("body-parser");
 const { Exercise, User_exercise, User, Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
 const MySet = require('../models').Set;
 const { raw } = require("body-parser");
