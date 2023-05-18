@@ -30,7 +30,7 @@ const getAllexercise = async (req, res) => {
         });
     }
 }
-//Cần sửa lại function này cho phù hợp yêu cầu
+
 const getDetailexercise = async (req, res) => {
 
 
@@ -196,12 +196,13 @@ const completeExercise = async (req, res) => {
         })
         console.log(now)
         if (user_his === null) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false
             })
         } else {
-            user_his.calories_out = calo_out.dataValues.calories
-            user_his.save()
+            
+            user_his.calories_out =await user_his.dataValues.calories_out + calo_out.dataValues.calories
+            await user_his.save()
         }
 
 
