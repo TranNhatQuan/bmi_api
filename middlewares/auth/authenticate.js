@@ -15,7 +15,8 @@ const authenticate = (req, res, next) => {
 
     return next();
   } catch {
-    return res.status(403).json({message: "Vui lòng đăng nhập!", isSuccess:false });
+    res.status(403).json({message: "Vui lòng đăng nhập!", isSuccess:false });
+    return;
   }
 }
 

@@ -8,9 +8,10 @@ const { query } = require("express");
 
 const getInfoRecipe = async (req, res) => {
 
-  const { idRecipe } = req.params;
+  
 
   try {
+    const { idRecipe } = req.params;
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User

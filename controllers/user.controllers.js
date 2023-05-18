@@ -17,9 +17,15 @@ async function calcCaloriesIn(date, idUser) {
     })
 
     let calo = 0;
-    for (item of menu) {
-        calo += Number(item.Recipe.dataValues.calories)
+    if(menu===null){
+        return calo
     }
+    else{
+        for (item of menu) {
+            calo += Number(item.Recipe.dataValues.calories)
+        }
+    }
+    
     return calo
 }
 
@@ -41,17 +47,13 @@ const getHistory = async (req, res) => {
 
 
         if (!u_history) {
-            let u_history_temp = await User_history.findOne({
-                where: {
-                    idUser: acc.User.idUser,
-                },
-            });
+            
 
             u_history = await User_history.create({
                 idUser: acc.User.idUser,
                 date: d,
-                weight: u_history_temp.dataValues.weight,
-                height: u_history_temp.dataValues.height,
+                weight: acc.User.weight,
+                height: acc.User.height,
                 water: 0,
                 calories_in: await calcCaloriesIn(d, acc.User.idUser),
                 calories_out: 0,
@@ -75,7 +77,7 @@ const getHistory = async (req, res) => {
 
 const getAllhistory = async (req, res) => {
     try {
-        // const exercise1 = await Exercise.findAll();
+        
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
@@ -230,8 +232,8 @@ const getRecipeHistory = async (req, res) => {
                     idRecipe: randomID,
                     filter: 3,
                 });
-              }
-            
+            }
+
             let breakfast = await Recipe_history.findAll({
                 attributes: ['idRecipe'],
                 where: {
@@ -485,7 +487,7 @@ const getInfoUser = async (req, res) => {
         });
         console.log(acc.User.idUser);
         const user_h = await User.findOne({
-            where:acc.User.idUser,
+            where: acc.User.idUser,
             attributes: ['idUser', 'name', 'gender', 'weight', 'height', 'isShare'],
         })
         res.status(200).json(user_h);
@@ -568,8 +570,9 @@ const editMenuUser = async (req, res) => {
 };
 
 const editUser = async (req, res) => {
-    const { name, gender, height, weight, isShare } = req.body;
+    
     try {
+        const { name, gender, height, weight, isShare } = req.body;
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
@@ -593,84 +596,104 @@ const editUser = async (req, res) => {
                 idUser: acc.User.idUser,
             },
         });
-        if (!user_his) {
+        if (user_his===null) {
             let u_history_temp = await User_history.findOne({
                 where: {
                     idUser: acc.User.idUser,
                 },
             });
-
-            user_his = await User_history.create({
-                idUser: acc.User.idUser,
-                date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-                weight: weight,
-                height: height,
-                water: u_history_temp.dataValues.water,
-                calories_in: u_history_temp.dataValues.calories_in,
-                calories_out: u_history_temp.dataValues.calories_out,
-            });
-        }
-        else {
-            user_his = await User_history.update({
-                height: height,
-                weight: weight
-            }, {
-                where: {
+            if(u_history_temp===null){
+                user_his = await User_history.create({
                     idUser: acc.User.idUser,
                     date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
-                }
-            });
+                    weight: weight,
+                    height: height,
+                    water: 0,
+                    calories_in: 0,
+                    calories_out: 0,
+                });
+            }
+            else{
+                user_his = await User_history.create({
+                    idUser: acc.User.idUser,
+                    date: moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD"),
+                    weight: weight,
+                    height: height,
+                    water: u_history_temp.dataValues.water,
+                    calories_in: u_history_temp.dataValues.calories_in,
+                    calories_out: u_history_temp.dataValues.calories_out,
+                });
+            }
+            
+        }
+        else {
+            user_his.weight = weight
+            user_his.height = height
+            user_his.save()
         }
         res.status(200).json({
-            message: 'Success'
+            isSuccess:true
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error'
+            isSuccess:false
         });
     }
 };
 const getUser = async (req, res) => {
-    const idUser = req.params;
-    const id = idUser['idUser'];
-    console.log(idUser);
+
     try {
+        const { id } = req.params;
+        
         const user = await Userswithbmi.findOne({
             where: {
                 idUser: id,
             },
         });
+
         user_date = await User_history.findOne({
             where: {
                 idUser: id,
             },
-            attributes:['date']
+            attributes: ['date']
         });
-        user.dataValues.date=user_date.dataValues.date;
-        // delete user.dataValues.User_history;
-        const user_recipe = await User_recipe.sequelize.query(
-            `select user_recipes.idRecipe,name,calories,image,cmt,isLike from user_recipes inner join recipes
+        
+        if (user_date !== null) {
+            user.dataValues.date = user_date.dataValues.date;
+
+            let user_recipe = await User_recipe.sequelize.query(
+                `select user_recipes.idRecipe,name,calories,image,cmt,isLike from user_recipes inner join recipes
             on user_recipes.idRecipe= recipes.idRecipe 
             where user_recipes.idUser=${id} and isLike=1`,
-            {
-                type: QueryTypes.SELECT,
-                raw: true,
-            }
-        );
-        const user_ex = await User_exercise.sequelize.query(
-            `select user_exercises.idExercise,name,calories,image,cmt,isLike from user_exercises inner join exercises
+                {
+                    type: QueryTypes.SELECT,
+                    raw: true,
+                }
+            );
+            let user_ex = await User_exercise.sequelize.query(
+                `select user_exercises.idExercise,name,calories,image,cmt,isLike from user_exercises inner join exercises
             on user_exercises.idExercise= exercises.idExercise
             where user_exercises.idUser=${id} and isLike=1`,
-            {
-                type: QueryTypes.SELECT,
-                raw: true,
-            }
-        );
-        res
+                {
+                    type: QueryTypes.SELECT,
+                    raw: true,
+                }
+            );
+            return res
             .status(200)
             .json({
                 user, user_recipe, user_ex
             });
+        }
+        else{
+            return res
+            .status(200)
+            .json({
+                user
+            });
+        }
+
+        
 
     } catch (error) {
         res.status(500).json({
@@ -751,9 +774,9 @@ const editUserHistory = async (req, res) => {
             }
         });
         //console.log(user_his)
-        if(!user_his){
+        if (!user_his) {
             return res.status(404).json({
-                isSuccess:false
+                isSuccess: false
             });
         }
 
@@ -761,14 +784,14 @@ const editUserHistory = async (req, res) => {
         await user_his.save();
 
         res.status(200).json({
-            isSuccess:true,
+            isSuccess: true,
             user_his
         });
 
 
     } catch {
         res.status(500).json({
-            isSuccess:false
+            isSuccess: false
         });
     }
 };

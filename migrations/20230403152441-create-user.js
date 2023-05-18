@@ -21,11 +21,11 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       weight: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       height: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       

@@ -22,7 +22,7 @@ userRouter.get("/detail",authenticate, getInfoUser)
 userRouter.put("/edit/detail",authenticate, editUser)
 //Lấy ra thông tin của user theo idUser
 //Trả về name, giới tính, ngày tham gia(ngày đầu tiên trong user_history), height, weight, bmi, list user_recipe, user_exercise có isLike = 1 của người đó
-userRouter.get("/detail/:idUser",authenticate, getUser)
+userRouter.get("/detail/:id",authenticate, getUser)
 // Lấy ra list user 
 //Nhận các biến limit, page, min, max qua query
 //limit là số user trong 1 page, 
