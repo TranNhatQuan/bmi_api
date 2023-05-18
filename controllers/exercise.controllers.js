@@ -1,11 +1,8 @@
 const { QueryTypes } = require("sequelize");
-
 const moment = require('moment'); // require
-
-
 const { Exercise, User_exercise, User, Equipment, Account, User_history, Exercise_rank, Menu, Menu_equipment } = require("../models");
 const MySet = require('../models').Set;
-const { raw } = require("body-parser");
+const { json } = require("body-parser");
 
 // exerciseRouter.get("/", authenticate, getAllexercise);
 // //lay tat thong tin cua 1 bai tap gom cac MySet, rep, equipment
@@ -14,7 +11,16 @@ const { raw } = require("body-parser");
 // //lay tat thong tin cua 1 bai tap gom cac set, rep, equipment
 //Đã làm xong
 // //lay tat thong tin cua 1 bai tap gom cac MySet, rep, equipment
-
+function transformIdUsertoName(listCMT) {
+    return listCMT.map(exercsie => {
+        const name = exercsie.User.name;
+        return {
+            ...exercsie,
+            name,
+            User: undefined
+        };
+    });
+}
 const getAllexercise = async (req, res) => {
     const { level } = req.params;
     try {
@@ -413,7 +419,44 @@ const getTopEx = async (req, res) => {
         res.status(500).json({ isSuccess: false });
     }
 }
-const getExCmt = async (req, res) => { }
+const getExCmt = async (req, res) => {
+    const id_exercise = Number(req.query.id_exercise)
+    const limit = Number(req.query.limit);
+    const page = Number(req.query.page);
+    const limit_page = [limit * (page - 1), limit * page]
+
+
+    try {
+
+        const cmt = await User_exercise.findAndCountAll({
+            where: {
+                idExercise: id_exercise,
+            },
+            attributes: ['idUser', 'cmt', 'date'],
+            offset: limit_page[0],
+            limit: limit_page[1] - limit_page[0],
+            nest: true,
+            order: [['date', 'DESC']],
+            include: [
+                {
+                    model: User,
+                    attributes: ['name'],
+                },
+            ]
+        });
+        let listCMT = cmt.rows
+        maxPage = Math.ceil(cmt.count / limit)
+        listCMT = JSON.stringify(listCMT)
+        let listCmt = transformIdUsertoName(JSON.parse(listCMT))
+        res
+            .status(200)
+            .json({
+                listCmt, maxPage, isSuccess: true
+            });
+    } catch (error) {
+        res.status(500).json({ isSuccess: false });
+    }
+}
 module.exports = {
-    getAllexercise, getDetailexercise, userLikeEx, completeExercise, putCmtEx, getTopEx
+    getAllexercise, getDetailexercise, userLikeEx, completeExercise, putCmtEx, getTopEx, getExCmt
 }
