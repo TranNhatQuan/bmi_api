@@ -83,7 +83,7 @@ const getAllhistory = async (req, res) => {
             include: User
         });
         console.log(acc.User.idUser);
-        let list_u_h=[];
+        let list_user_history=[];
         let d = new Date(), y = d.getFullYear(), m = d.getMonth();
         let lastDay = new Date(y, m-4, 0);
         let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
@@ -101,7 +101,7 @@ const getAllhistory = async (req, res) => {
                  date: lastDay
                 },
             });
-            list_u_h.push(u_history);
+            list_user_history.push(u_history);
             for(let i=3;i>=0;i--)
             {
                 lastDay = new Date(y, m-i, 0);
@@ -112,7 +112,7 @@ const getAllhistory = async (req, res) => {
                      date: lastDay
                     },
                 });
-                list_u_h.push(u_h);
+                list_user_history.push(u_h);
             }
             u_history = await User_history.findOne({
                 where: {
@@ -120,7 +120,7 @@ const getAllhistory = async (req, res) => {
                  date: now
                 },
             });
-            list_u_h.push(u_history);
+            list_user_history.push(u_history);
         }
         else {
             let mon=new Date(u_history.dataValues.date);
@@ -131,7 +131,7 @@ const getAllhistory = async (req, res) => {
             lastDay = new Date(y, month+1, 0);     
             lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
             console.log(lastDay);
-            list_u_h.push(u_history);
+            list_user_history.push(u_history);
             if(mon==lastDay){
                 
                 for(let i=2;i<=6;i++)
@@ -153,7 +153,7 @@ const getAllhistory = async (req, res) => {
                         },
                     }); 
                 }           
-                if(u_h) list_u_h.push(u_h);
+                if(u_h) list_user_history.push(u_h);
             }
             }
             else {
@@ -176,16 +176,16 @@ const getAllhistory = async (req, res) => {
                         },
                     }); 
                 }           
-                if(u_h) list_u_h.push(u_h);
+                if(u_h) list_user_history.push(u_h);
             }
             }
         }        
-        let count_mon = list_u_h.length;
-        console.log(count_mon);
+        let count_month = list_user_history.length;
+        console.log(count_month);
         res
                 .status(200)
                 .json({
-                    count_mon, list_u_h
+                    count_month, list_user_history
                 });
     } catch (error) {
         res.status(500).json({
