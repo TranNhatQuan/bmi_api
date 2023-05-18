@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "250701",
+    "password": "root",
     "database": "bmi",
     "host": "localhost",
     "dialect": "mysql"
