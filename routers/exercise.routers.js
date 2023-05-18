@@ -8,7 +8,7 @@ const express = require("express");
 const { exercise } = require("../models")
 const { authenticate } = require("../middlewares/auth/authenticate.js")
 const { authorize } = require("../middlewares/auth/authorize.js")
-const { getAllexercise, getDetailexercise, createexercise, updateexercise, deleteexercise, userLikeEx, completeExercise, selectExercise, putCmtEx }
+const { getAllexercise, getDetailexercise, createexercise, updateexercise, deleteexercise, userLikeEx, completeExercise, selectExercise, putCmtEx, getTopEx }
     = require("../controllers/exercise.controllers");
 const { checkCreateexercise, checkexerciseValue } = require("../middlewares/validates/checkCreate.js");
 const exerciseRouter = express.Router();
@@ -25,6 +25,8 @@ exerciseRouter.put("/like/", authenticate, userLikeEx);
 exerciseRouter.put("/check/:id_exercise", authenticate, completeExercise);
 //Thêm cmt của người dùng vào bài tập
 exerciseRouter.put("/cmt/:id_exercise", authenticate, putCmtEx);
+//Lấy ra top 10 bài tập có points cao nhất 
+exerciseRouter.get("/rank/", authenticate, getTopEx);
 // //tam choi chua lam cac phan co auth 1
 // exerciseRouter.post("/create", authenticate, authorize(["1"]), checkCreateexercise(exercise), checkexerciseValue(exercise), createexercise);
 // exerciseRouter.put("/update/:id_exercise", authenticate, authorize(["1"]), checkexerciseValue(exercise), updateexercise);
