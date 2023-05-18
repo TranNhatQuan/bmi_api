@@ -81,15 +81,110 @@ const getAllhistory = async (req, res) => {
             include: User
         });
         console.log(acc.User.idUser);
-        const user_h = await User_history.sequelize.query(
-            `select * from user_histories where user_histories.date <= CURRENT_DATE() 
-            and user_histories.idUser=${acc.User.idUser}`,
+        let list_u_h=[];
+        let d = new Date(), y = d.getFullYear(), m = d.getMonth();
+        let lastDay = new Date(y, m-4, 0);
+        let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+        lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+        let u_history = await User_history.findOne({
+            where: {
+             idUser: acc.User.idUser,
+            },
+        });
+        if(u_history.dataValues.date<=lastDay)
+        {   
+            u_history = await User_history.findOne({
+                where: {
+                 idUser: acc.User.idUser,
+                 date: lastDay
+                },
+            });
+            list_u_h.push(u_history);
+            for(let i=3;i>=0;i--)
             {
-                type: QueryTypes.SELECT,
-                raw: true,
+                lastDay = new Date(y, m-i, 0);
+                lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+                let u_h = await User_history.findOne({
+                    where: {
+                     idUser: acc.User.idUser,
+                     date: lastDay
+                    },
+                });
+                list_u_h.push(u_h);
             }
-        );
-        res.status(200).json(user_h);
+            u_history = await User_history.findOne({
+                where: {
+                 idUser: acc.User.idUser,
+                 date: now
+                },
+            });
+            list_u_h.push(u_history);
+        }
+        else {
+            let mon=new Date(u_history.dataValues.date);
+            //mon = moment(mon).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+            let month = mon.getMonth();
+            console.log(month);
+            console.log(m);
+            lastDay = new Date(y, month+1, 0);     
+            lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+            console.log(lastDay);
+            list_u_h.push(u_history);
+            if(mon==lastDay){
+                
+                for(let i=2;i<=6;i++)
+            {
+                lastDay = new Date(y, month+i, 0);
+                lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+                
+                let u_h = await User_history.findOne({
+                    where: {
+                     idUser: acc.User.idUser,
+                     date: lastDay
+                    },
+                }); 
+                if(month+i==m+1){
+                    u_h = await User_history.findOne({
+                        where: {
+                         idUser: acc.User.idUser,
+                         date: now
+                        },
+                    }); 
+                }           
+                if(u_h) list_u_h.push(u_h);
+            }
+            }
+            else {
+                for(let i=1;i<=5;i++)
+            {
+                lastDay = new Date(y, month+i, 0);
+                lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+                
+                let u_h = await User_history.findOne({
+                    where: {
+                     idUser: acc.User.idUser,
+                     date: lastDay
+                    },
+                }); 
+                if(month+i==m+1){
+                    u_h = await User_history.findOne({
+                        where: {
+                         idUser: acc.User.idUser,
+                         date: now
+                        },
+                    }); 
+                }           
+                if(u_h) list_u_h.push(u_h);
+            }
+            }
+        }        
+        let count_mon = list_u_h.length;
+        console.log(count_mon);
+        res
+                .status(200)
+                .json({
+                    count_mon, list_u_h
+                });
     } catch (error) {
         res.status(500).json({
             message: 'Error'
