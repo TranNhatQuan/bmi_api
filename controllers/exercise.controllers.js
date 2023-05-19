@@ -226,25 +226,8 @@ const completeExercise = async (req, res) => {
         let calo_out = await Exercise.findOne({
             where: { idExercise: id_exercise }
         })
-        if (user_his === null) {
-            user_his = await User_history.create({
-                idUser: acc.User.idUser,
-                date: now,
-                weight: 0,
-                height: 0,
-                calories_in: 0,
-                calories_out: calo_out.dataValues.calories,
-                water: 0,
-
-            })
-            res.status(404).json({
-                success: true
-            })
-        } else {
-            user_his.calories_out = user_his.calories_out + calo_out.dataValues.calories
-            user_his.save()
-        }
-        console.log(now)
+       
+        
         if (user_his === null) {
             return res.status(404).json({
                 success: false

@@ -87,6 +87,107 @@ const getInfoRecipe = async (req, res) => {
     res.status(500).json({ isSuccess: false });
   }
 };
+const editRecipe = async (req, res) => {
+
+
+
+  try {
+    const { idRecipe } = req.params;
+
+    const { name, info, calories, proteins, fats, carbo, image } = req.body;
+
+    let recipe = await Recipe.findOne({
+      where: {
+        idRecipe: { [Op.ne]: idRecipe },
+        name: name
+      },
+    })
+    if (recipe) {
+      return res.status(409).send({ isSuccess: false, isExist: true, status: true, recipe });
+    }
+    recipe = await Recipe.findOne({
+      where: {
+        idRecipe: idRecipe,
+      },
+    });
+
+
+    if (recipe) {
+      await recipe.update(
+        {
+          name: name,
+          info: info,
+
+          calories: calories,
+
+          fats: fats,
+          carbo: carbo,
+          proteins: proteins,
+
+          image: image
+        },
+      )
+
+      return res
+        .status(200)
+        .json({
+          recipe, isSuccess: true
+        });
+    }
+    else {
+      return res.status(403).json({ isSuccess: false });
+    }
+
+
+
+
+
+
+
+  } catch (error) {
+    res.status(500).json({ isSuccess: false });
+  }
+};
+const addRecipe = async (req, res) => {
+
+
+
+  try {
+    
+
+    const { name, info, calories, proteins, fats, carbo, image } = req.body;
+    //console.log(name)
+    let recipe = await Recipe.create({
+      name: name,
+      info: info,
+
+      calories: calories,
+
+      fats: fats,
+      carbo: carbo,
+      proteins: proteins,
+      points: 0,
+      idType: 1,
+      image: image
+    })
+
+    return res
+      .status(200)
+      .json({
+        recipe, isSuccess: true, isExist:false
+      });
+
+
+
+
+
+
+
+
+  } catch (error) {
+    res.status(500).json({ isSuccess: false });
+  }
+};
 const getFavorite = async (req, res) => {
 
 
@@ -373,7 +474,7 @@ const getAllRecipeFilterAdmin = async (req, res) => {
     const limit = Number(req.query.limit);
     const page = Number(req.query.page);
     const limit_page = [limit * (page - 1), limit * page]
-    
+
     let result;
     if (calories[0] === 0 && calories[1] === 0) {
       result = await Recipe.findAndCountAll({
@@ -383,7 +484,7 @@ const getAllRecipeFilterAdmin = async (req, res) => {
         limit: limit_page[1] - limit_page[0],
         nest: true,
         include: [
-          
+
           ...ingredient.map(id => ({
             model: Recipe_ingredient,
             where: { idIngredient: id },
@@ -402,7 +503,7 @@ const getAllRecipeFilterAdmin = async (req, res) => {
         limit: limit_page[1] - limit_page[0],
         nest: true,
         include: [
-        
+
           ...ingredient.map(id => ({
             model: Recipe_ingredient,
             where: { idIngredient: id },
@@ -418,7 +519,7 @@ const getAllRecipeFilterAdmin = async (req, res) => {
     let maxPage = Math.ceil(result.count / limit);
 
     let recipes = result.rows;
-    
+
     res
       .status(200)
       .json({
@@ -594,6 +695,7 @@ const searchRecipe = async (req, res) => {
 module.exports = {
   getInfoRecipe, getFavorite, getAllRecipe, getRecipeByTitle, likeRecipe,
   userCMT, updateRank, listCmtRecipe, getAllRecipeFilter,
-  getRecipeRank, searchRecipe, getAllRecipeFilterAdmin
+  getRecipeRank, searchRecipe, getAllRecipeFilterAdmin, editRecipe
+  , addRecipe
 };
 
