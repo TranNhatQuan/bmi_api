@@ -8,10 +8,10 @@ const {getAllIngredient, addIngredient, editIngredient} = require("../controller
 const ingredientRouter = express.Router();
 
 
-ingredientRouter.get("/",authenticate,authorize([1]), getAllIngredient)
+ingredientRouter.get("/",authenticate,authorize(1), getAllIngredient)
 
-ingredientRouter.put("/edit",authenticate, authorize([1]), editIngredient)
-ingredientRouter.post("/add",authenticate,authorize([1]),addIngredient)
+ingredientRouter.put("/edit",authenticate, authorize(1), editIngredient)
+ingredientRouter.post("/add",authenticate,authorize(1),addIngredient)
 module.exports = {
     ingredientRouter
 }
