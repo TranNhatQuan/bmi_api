@@ -141,112 +141,18 @@ const getDetailexercise = async (req, res) => {
         });
     }
 };
-//Cần viết lại function này
-// const userLikeEx = async (req, res) => {
-//     const { isLike, id_exercise } = req.body;
-//     try {
-//         const acc = await Account.findOne({
-//             where: { mail: req.mail },
-//             include: User
-//         })
 
-//         let details = await Exercise.findOne({
-//             where: {
-//                 idExercise: id_exercise,
-//             },
-//             //raw : true,
-//             nest: true,
-//             include: [
-//                 {
-//                 model: MySet,
-//                 required: false,
-//                 include: [{
-//                     model: Menu,
-//                     required: false,
-//                     include: [{
-//                         model: Menu_equipment,
-//                         required: false,
-
-//                     }]
-//                 }]
-//             },
-
-//             {
-//                 model: User_exercise,
-//                 where: { idUser: acc.User.idUser },
-//                 required: false,
-//                 attributes: ['isLike']
-//             },
-//             {
-//                 model: Exercise_rank,
-
-//                 required: false,
-//                 attributes: ['rank']
-//             },
-//             ],
-
-
-//         });
-//         //let equipmentSet = new Set([Equipment]);
-//         //console.log(equipmentSet)
-
-//         let set = new Set();
-//         let equipments=[]
-//         for(let item of details.Sets){
-
-//             for(let item1 of item.Menus){
-
-//                 for(let item2 of item1.Menu_equipments){
-
-//                     let equipment = await Equipment.findOne({
-//                         where:{idEquipment: item2.idEquipment}
-
-//                     });
-
-//                     if (equipment) {
-//                         let index = equipments.findIndex(
-//                           e => e.idEquipment === equipment.idEquipment
-//                         );
-//                         if (index === -1) {
-//                           equipments.push(equipment);
-//                         }
-//                       }
-
-
-//                 }
-//             }
-
-
-//           }
-//         details.dataValues.equipments = equipments
-//         if (details.dataValues.User_exercises[0]) {
-//             details.dataValues.isLike = details.dataValues.User_exercises[0].isLike
-//             delete details.dataValues.User_exercises
-//         }
-//         if (details.dataValues.Exercise_ranks) {
-//             details.dataValues.rank = details.dataValues.Exercise_ranks.rank
-//             delete details.dataValues.Exercise_ranks
-//           }
-//           else {
-//             details.dataValues.rank = 0;
-//             delete details.dataValues.Exercise_ranks
-//           }
-//         res.status(200).json({details});
-//     } catch (error) {
-//         res.status(500).json({
-//             error
-//         });
-//     }
-// };
-//Đã làm xong
 const userLikeEx = async (req, res) => {
     try {
         const isLike = Number(req.query.isLike)
         const id_exercise = Number(req.query.id_exercise)
-        now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD")
+        now = moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
+        })
+        let ex = await Exercise.findOne({
+            where: { idExercise: id_exercise }
         })
         let user_like = await User_exercise.findOne({
             where: {
@@ -254,15 +160,12 @@ const userLikeEx = async (req, res) => {
                 idUser: acc.User.idUser,
             },
         })
-        if (isLike == 1) {
-            // let user_like = await User_exercise.findOne({
-            //     where: {
-            //         idExercise: id_exercise,
-            //         idUser: acc.User.idUser,
-            //     },
-            //     include: Exercise,
-            // })
+        console.log(isLike)
+        if (isLike === 1) {
+            //console.log(user_like)
+            console.log('test')
             if (user_like === null) {
+                console.log('test1')
                 user_like = await User_exercise.create({
                     idUser: acc.User.idUser,
                     idExercise: id_exercise,
@@ -270,27 +173,29 @@ const userLikeEx = async (req, res) => {
                     date: now,
                     isLike: 1,
                 })
-
-                res.status(200).json({ success: true, user_his });
+                ex.points = ex.points + 1
+                await ex.save();
+                return res.status(200).json({ success: true, user_like });
             }
+
             else {
-                console.log(ex.points)
-                console.log('th1')
+
+
                 user_like.isLike = 1
                 ex.points = ex.points + 1
-                user_like.save()
-                ex.save()
-                res.status(200).json({ success: true })
+                await user_like.save()
+                await ex.save()
+                return res.status(200).json({ success: true, user_like })
             }
+
         }
         else {
-            console.log(ex.points)
-            console.log('th2')
+
             user_like.isLike = 0;
             ex.points = ex.points - 1
-            user_like.save();
-            ex.save();
-            res.status(200).json({ success: true });
+            await user_like.save();
+            await ex.save();
+            return res.status(200).json({ success: true, user_like });
         }
     } catch (error) {
         res.status(500).json({
@@ -306,7 +211,7 @@ const completeExercise = async (req, res) => {
 
         const { id_exercise } = req.params;
         console.log(id_exercise)
-        let now = moment().tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+        let now = moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss");
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
@@ -403,17 +308,16 @@ const putCmtEx = async (req, res) => {
 }
 const getTopEx = async (req, res) => {
     try {
-        const exerciseRank = await sequelize.query('select idExercise, name, calories, image, level from bmi.exercises order by points desc limit 10',
-            {
-                model: Exercise,
-                type: QueryTypes.SELECT
-            }
-        )
+        const exerciseRank = await Exercise.findAll({
+            order: [['points', 'DESC']],
+            limit: 10
+        })
+        console.log(exerciseRank)
         res
             .status(200)
             .json({
                 exerciseRank,
-                Success: true
+                isSuccess: true
             });
     } catch (error) {
         res.status(500).json({ isSuccess: false });
