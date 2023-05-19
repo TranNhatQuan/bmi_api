@@ -8,7 +8,7 @@ const { query } = require("express");
 
 const getInfoRecipe = async (req, res) => {
 
-  
+
 
   try {
     const { idRecipe } = req.params;
@@ -67,10 +67,10 @@ const getInfoRecipe = async (req, res) => {
       recipe.dataValues.rank = 0;
       delete recipe.dataValues.Recipe_rank
     }
-    for(let item of recipe.dataValues.Recipe_ingredients){
-      
-      item.dataValues.name=item.dataValues.Ingredient.dataValues.inName;
-      item.dataValues.image=item.dataValues.Ingredient.dataValues.inImage;
+    for (let item of recipe.dataValues.Recipe_ingredients) {
+
+      item.dataValues.name = item.dataValues.Ingredient.dataValues.inName;
+      item.dataValues.image = item.dataValues.Ingredient.dataValues.inImage;
       delete item.dataValues.Ingredient;
     }
 
@@ -282,9 +282,9 @@ function transformIdUsertoName(listCMT) {
   });
 }
 const getAllRecipeFilter = async (req, res) => {
-  
-  
-  
+
+
+
 
   try {
     const calories = req.query.calories.split(',').map(Number);
@@ -351,12 +351,78 @@ const getAllRecipeFilter = async (req, res) => {
 
     let recipes = result.rows;
     let recipeJson = JSON.stringify(recipes)
-    
+
     recipeJson = transformRecipes(JSON.parse(recipeJson))
     res
       .status(200)
       .json({
         recipeJson, isSuccess: true, maxPage
+      });
+  } catch (error) {
+    res.status(500).json({ isSuccess: false });
+  }
+};
+const getAllRecipeFilterAdmin = async (req, res) => {
+
+
+
+
+  try {
+    const calories = req.query.calories.split(',').map(Number);
+    const ingredient = req.query.ingredient.split(',').map(Number);
+    const limit = Number(req.query.limit);
+    const page = Number(req.query.page);
+    const limit_page = [limit * (page - 1), limit * page]
+    
+    let result;
+    if (calories[0] === 0 && calories[1] === 0) {
+      result = await Recipe.findAndCountAll({
+
+        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        offset: limit_page[0],
+        limit: limit_page[1] - limit_page[0],
+        nest: true,
+        include: [
+          
+          ...ingredient.map(id => ({
+            model: Recipe_ingredient,
+            where: { idIngredient: id },
+            required: id !== 0,
+            attributes: []
+          }))
+        ]
+      });
+    } else {
+      result = await Recipe.findAndCountAll({
+        where: {
+          calories: { [Op.between]: calories }
+        },
+        attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
+        offset: limit_page[0],
+        limit: limit_page[1] - limit_page[0],
+        nest: true,
+        include: [
+        
+          ...ingredient.map(id => ({
+            model: Recipe_ingredient,
+            where: { idIngredient: id },
+            required: id !== 0,
+            attributes: []
+          }))
+        ]
+      });
+    }
+
+
+
+    let maxPage = Math.ceil(result.count / limit);
+
+    let recipes = result.rows;
+    
+    res
+      .status(200)
+      .json({
+        recipes, isSuccess: true, maxPage
       });
   } catch (error) {
     res.status(500).json({ isSuccess: false });
@@ -398,7 +464,7 @@ const listCmtRecipe = async (req, res) => {
         listCMT, maxPage, isSuccess: true
       });
   } catch (error) {
-    res.status(500).json({isSuccess:false});
+    res.status(500).json({ isSuccess: false });
   }
 };
 
@@ -451,7 +517,7 @@ const updateRank = async (req, res) => {
         isSuccess: true
       });
   } catch (error) {
-    res.status(500).json({isSuccess:false});
+    res.status(500).json({ isSuccess: false });
   }
 };
 const getRecipeRank = async (req, res) => {
@@ -471,33 +537,34 @@ const getRecipeRank = async (req, res) => {
         isSuccess: true
       });
   } catch (error) {
-    res.status(500).json({isSuccess:false});
+    res.status(500).json({ isSuccess: false });
   }
 };
 const searchRecipe = async (req, res) => {
-  const name = req.query.name
-  const limit = Number(req.query.limit);
-  const page = Number(req.query.page);
-  const limit_page = [limit * (page - 1), limit * page]
-  console.log(name,limit,page,limit_page)
+
 
   try {
+    const name = req.query.name
+    const limit = Number(req.query.limit);
+    const page = Number(req.query.page);
+    const limit_page = [limit * (page - 1), limit * page]
+    console.log(name, limit, page, limit_page)
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User
     })
 
     const result = await Recipe.findAndCountAll({
-      where:{
-        name:{[Op.like]:`%${name}%`}
+      where: {
+        name: { [Op.like]: `%${name}%` }
       },
       attributes: ['idRecipe', 'name', 'image', 'calories', 'points'],
       offset: limit_page[0],
       limit: limit_page[1] - limit_page[0],
       nest: true,
-      include:[
+      include: [
         {
-          model:User_recipe,
+          model: User_recipe,
           where: { isLike: 1, idUser: acc.User.idUser },
           required: false,
           attributes: ['isLike']
@@ -520,12 +587,13 @@ const searchRecipe = async (req, res) => {
         isSuccess: true
       });
   } catch (error) {
-    res.status(500).json({isSuccess:false});
+    res.status(500).json({ isSuccess: false });
   }
 };
+
 module.exports = {
   getInfoRecipe, getFavorite, getAllRecipe, getRecipeByTitle, likeRecipe,
   userCMT, updateRank, listCmtRecipe, getAllRecipeFilter,
-  getRecipeRank, searchRecipe
+  getRecipeRank, searchRecipe, getAllRecipeFilterAdmin
 };
 

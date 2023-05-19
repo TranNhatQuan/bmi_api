@@ -2,10 +2,11 @@ const express = require("express");
 
 const { authenticate } = require("../middlewares/auth/authenticate.js")
 // const {authorize} = require("../middlewares/auth/authorize.js")
-const { checkExistUserRecipe } = require("../middlewares/validates/checkExist");
+const {authorize} = require("../middlewares/auth/authorize.js")
 const { getInfoRecipe, getFavorite, getAllRecipe, getRecipeByTitle, likeRecipe, userCMT, updateRank,
     listCmtRecipe, getAllRecipeFilter, getRecipeRank,
-    searchRecipe } = require("../controllers/recipe.controllers");
+    searchRecipe, 
+    getAllRecipeFilterAdmin} = require("../controllers/recipe.controllers");
 
 const recipeRouter = express.Router();
 //lay day du thong tin mot mon an
@@ -17,6 +18,7 @@ recipeRouter.get("/favorite", authenticate, getFavorite)
 recipeRouter.get("/", authenticate, getAllRecipe)
 recipeRouter.get("/search/", authenticate, searchRecipe)
 recipeRouter.get("/all/filter", authenticate, getAllRecipeFilter)
+recipeRouter.get("/all/filterAdmin", authenticate,authorize(1), getAllRecipeFilterAdmin)
 recipeRouter.get('/rank', authenticate, getRecipeRank)
 recipeRouter.get("/title/:title", authenticate, getRecipeByTitle)
 recipeRouter.put("/updateRank", authenticate, updateRank)
