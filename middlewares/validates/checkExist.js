@@ -21,7 +21,27 @@ const checkExistAccount = (Model) => {
     }
    
   };
-
+  const checkExistRecipe = (Model) => {
+    return async (req, res, next) => {
+      try {
+        const { name } = req.body;
+      
+        const account = await Model.findOne({
+          where: {
+            name,
+          },
+        });
+        if (account) {
+          next();
+        } else {
+          res.status(404).send({ isSuccess:false, isExist: false, status: true });
+        }
+      } catch (error) {
+        res.status(500).send({isSuccess:false, isExist: false, status: true });
+      }
+      }
+     
+    };
 
 const checkExistAccount1 = (Model) => {
   return async (req, res, next) => {
@@ -81,5 +101,5 @@ const checkExistUserRecipe = () => {
 
 module.exports = {
  
-  checkExistAccount,checkExistAccount1,checkExistUserRecipe
+  checkExistAccount,checkExistAccount1,checkExistUserRecipe, checkExistRecipe
 };

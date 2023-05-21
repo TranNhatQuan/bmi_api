@@ -13,10 +13,10 @@ const authorize = (role) => async (req, res, next) => {
             next();
             
         } else {
-            res.status(403).json({ message: "Bạn không có quyền sử dụng chức năng này!" });
+           return  res.status(403).json({ message: "Bạn không có quyền sử dụng chức năng này!" });
         }
     } catch (error) {
-        res.status(500).json({ message: "Sth wrong!" });
+       return  res.status(500).json({ message: "Sth wrong!" });
     }
 
 };
