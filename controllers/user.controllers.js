@@ -1,7 +1,7 @@
 const { Recipe, User_history, Recipe_history, Account, User, Sequelize, Userswithbmi, User_recipe, User_exercise } = require("../models");
 const moment = require('moment'); // require
 const { Op } = require("sequelize");
-const { QueryTypes, DATEONLY, DATE } = require("sequelize");
+const { QueryTypes } = require("sequelize");
 async function calcCaloriesIn(date, idUser) {
 
     let menu = await Recipe_history.findAll({
@@ -82,7 +82,8 @@ const getAllhistory = async (req, res) => {
             where: { mail: req.mail },
             include: User
         });
-        console.log(acc.User.idUser);
+        console.log('start')
+       // console.log(acc.User.idUser);
         let list_user_history=[];
         let d = new Date(), y = d.getFullYear(), m = d.getMonth();
         let lastDay = new Date(y, m-4, 0);
@@ -93,8 +94,11 @@ const getAllhistory = async (req, res) => {
              idUser: acc.User.idUser,
             },
         });
+        console.log(lastDay)
+        console.log(1)
         if(u_history.dataValues.date<=lastDay)
-        {   
+        {   console.log('test')
+            console.log(lastDay)
             u_history = await User_history.findOne({
                 where: {
                  idUser: acc.User.idUser,
@@ -123,6 +127,7 @@ const getAllhistory = async (req, res) => {
             list_user_history.push(u_history);
         }
         else {
+            console.log(lastDay)
             let mon=new Date(u_history.dataValues.date);
             //mon = moment(mon).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
             let month = mon.getMonth();
@@ -130,6 +135,7 @@ const getAllhistory = async (req, res) => {
             console.log(m);
             lastDay = new Date(y, month+1, 0);     
             lastDay = moment(lastDay).tz('Asia/Ho_Chi_Minh').format("YYYY-MM-DD");
+            console.log(mon)
             console.log(lastDay);
             list_user_history.push(u_history);
             if(mon==lastDay){
@@ -146,6 +152,7 @@ const getAllhistory = async (req, res) => {
                     },
                 }); 
                 if(month+i==m+1){
+                    console.log('check')
                     u_h = await User_history.findOne({
                         where: {
                          idUser: acc.User.idUser,
@@ -181,7 +188,7 @@ const getAllhistory = async (req, res) => {
             }
         }        
         let count_month = list_user_history.length;
-        console.log(count_month);
+        //console.log(count_month);
         res
                 .status(200)
                 .json({

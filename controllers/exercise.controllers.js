@@ -62,10 +62,12 @@ const getDetailexercise = async (req, res) => {
             include: [
                 {
                     model: MySet,
-                    required: false,
+                    required: true,
+                    attributes: ['index'],
                     include: [{
                         model: Menu,
-                        required: false,
+                        required: true,
+                        attributes: ['index', 'name', 'image', 'video', 'time'],
                         include: [{
                             model: Menu_equipment,
                             required: false,
@@ -92,7 +94,12 @@ const getDetailexercise = async (req, res) => {
         });
         //let equipmentSet = new Set([Equipment]);
         //console.log(equipmentSet)
-
+        if (details === null) {
+            return res.status(403).json({
+                isExist: false,
+                isSuccess: false,
+            });
+        }
         let set = new Set();
         let equipments = []
         for (let item of details.Sets) {
@@ -102,13 +109,13 @@ const getDetailexercise = async (req, res) => {
                 for (let item2 of item1.Menu_equipments) {
 
                     let equipment = await Equipment.findOne({
-                        where: { idEquipment: item2.idEquipment }
-
+                        where: { idEquipment: item2.idEquipment },
+                        attributes: ['name', 'image']
                     });
 
                     if (equipment) {
                         let index = equipments.findIndex(
-                            e => e.idEquipment === equipment.idEquipment
+                            e => e.name === equipment.name
                         );
                         if (index === -1) {
                             equipments.push(equipment);
@@ -117,22 +124,27 @@ const getDetailexercise = async (req, res) => {
 
 
                 }
+                delete item1.dataValues.Menu_equipments
             }
 
 
         }
-        details.dataValues.equipments = equipments
+        if (equipments !== []) {
+            details.dataValues.Equipments = equipments
+        }
+
+
         if (details.dataValues.User_exercises[0]) {
             details.dataValues.isLike = details.dataValues.User_exercises[0].isLike
             delete details.dataValues.User_exercises
         }
-        if (details.dataValues.Exercise_ranks) {
-            details.dataValues.rank = details.dataValues.Exercise_ranks.rank
-            delete details.dataValues.Exercise_ranks
+        if (details.dataValues.Exercise_rank) {
+            details.dataValues.rank = details.dataValues.Exercise_rank.rank
+            delete details.dataValues.Exercise_rank
         }
         else {
             details.dataValues.rank = 0;
-            delete details.dataValues.Exercise_ranks
+            delete details.dataValues.Exercise_rank
         }
         res.status(200).json({ details });
     } catch (error) {
@@ -146,7 +158,7 @@ const userLikeEx = async (req, res) => {
     try {
         const isLike = Number(req.query.isLike)
         const id_exercise = Number(req.query.id_exercise)
-        now = moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss")
+        now = moment().format("YYYY-MM-DD HH:mm:ss")
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
@@ -211,7 +223,7 @@ const completeExercise = async (req, res) => {
 
         const { id_exercise } = req.params;
         console.log(id_exercise)
-        let now = moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss");
+        let now = moment().format("YYYY-MM-DD HH:mm:ss");
         const acc = await Account.findOne({
             where: { mail: req.mail },
             include: User
@@ -226,25 +238,22 @@ const completeExercise = async (req, res) => {
         let calo_out = await Exercise.findOne({
             where: { idExercise: id_exercise }
         })
-       
-        
+
+
+
+        console.log(now)
         if (user_his === null) {
+
             return res.status(404).json({
                 success: false
             })
         } else {
-            console.log(now)
-            if (user_his === null) {
-                return res.status(404).json({
-                    success: false
-                })
-            } else {
 
-                user_his.calories_out = await user_his.dataValues.calories_out + calo_out.dataValues.calories
-                await user_his.save()
-            }
-            res.status(200).json({ success: true, user_his });
+            user_his.calories_out = await user_his.dataValues.calories_out + calo_out.dataValues.calories
+            await user_his.save()
         }
+        res.status(200).json({ success: true, user_his });
+
     } catch (error) {
         res.status(500).json({
             success: false
@@ -275,7 +284,7 @@ const putCmtEx = async (req, res) => {
                 idUser: acc.User.idUser,
                 idExercise: id_exercise,
                 cmt: cmt,
-                date: moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
                 isLike: 0,
             });
 

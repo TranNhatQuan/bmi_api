@@ -153,7 +153,7 @@ const addRecipe = async (req, res) => {
 
 
   try {
-    
+
 
     const { name, info, calories, proteins, fats, carbo, image } = req.body;
     //console.log(name)
@@ -174,7 +174,7 @@ const addRecipe = async (req, res) => {
     return res
       .status(200)
       .json({
-        recipe, isSuccess: true, isExist:false
+        recipe, isSuccess: true, isExist: false
       });
 
 
@@ -225,18 +225,23 @@ const getFavorite = async (req, res) => {
   }
 };
 const likeRecipe = async (req, res) => {
-  const idRecipe = req.query.idRecipe;
-  const isLike = parseInt(req.query.isLike);
+
 
   try {
+    const idRecipe = parseInt(req.query.idRecipe);
+    //console.log(idRecipe)
+    const isLike = parseInt(req.query.isLike);
+    //console.log(isLike)
+    //console.log(1)
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User
     })
-
+    //console.log(2)
     let recipe = await Recipe.findOne({
       where: { idRecipe }
     })
+    //console.log(3)
     let recipe_fa = await User_recipe.findOne({
       where: {
         idUser: acc.User.idUser,
@@ -246,7 +251,7 @@ const likeRecipe = async (req, res) => {
 
 
     });
-
+    //console.log(4)
     if (!recipe_fa) {
 
       recipe_fa = await User_recipe.create(
@@ -258,6 +263,7 @@ const likeRecipe = async (req, res) => {
           cmt: null
         }
       )
+
       if (isLike === 0) {
         recipe.points = recipe.points - 1
         await recipe.save();
@@ -281,7 +287,7 @@ const likeRecipe = async (req, res) => {
       recipe_fa.isLike = isLike;
       await recipe_fa.save();
     }
-
+    //console.log(5)
     //let test =1;
 
     res
@@ -291,14 +297,15 @@ const likeRecipe = async (req, res) => {
         recipe_fa, isSuccess: true
       });
   } catch (error) {
-    res.status(500).json({ isSuccess: false });
+    return res.status(500).json({ isSuccess: false, error });
   }
 };
 const userCMT = async (req, res) => {
-  const { idRecipe } = req.params;
-  const { cmt } = req.body;
+
 
   try {
+    const { idRecipe } = req.params;
+    const { cmt } = req.body;
     const acc = await Account.findOne({
       where: { mail: req.mail },
       include: User
@@ -321,7 +328,7 @@ const userCMT = async (req, res) => {
           idUser: acc.User.idUser,
           idRecipe: idRecipe,
           isLike: 0,
-          date: moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
+          date: moment().format("YYYY-MM-DD HH:mm:ss"),
           cmt: cmt
         }
       )
@@ -329,7 +336,7 @@ const userCMT = async (req, res) => {
     }
     else {
       recipe_fa.cmt = cmt;
-      recipe_fa.date = moment().add(7, 'hours').format("YYYY-MM-DD HH:mm:ss"),
+      recipe_fa.date = moment().format("YYYY-MM-DD HH:mm:ss"),
         await recipe_fa.save();
     }
 

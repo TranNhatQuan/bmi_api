@@ -8,7 +8,7 @@ const {getAllIngredient, addIngredient, editIngredient, delIngredient, searchIng
 const ingredientRouter = express.Router();
 
 
-ingredientRouter.get("/",authenticate,authorize(1), getAllIngredient)
+ingredientRouter.get("/",authenticate,authenticate, getAllIngredient)
 ingredientRouter.get("/search",authenticate,authorize(1), searchIngredient)
 ingredientRouter.put("/edit",authenticate, authorize(1), editIngredient)
 ingredientRouter.post("/add",authenticate,authorize(1),addIngredient)
