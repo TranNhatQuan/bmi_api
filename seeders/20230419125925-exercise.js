@@ -26,6 +26,27 @@ module.exports = {
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaKOCBoSDpf2ibE6wJbeZQOPNS9E-Q1jTgEA&usqp=CAU",
         level: 3,points: 0,
       },
+      {
+        name: "Lunges",
+        info: "",
+        calories: 250,
+        image: "https://i.pinimg.com/564x/45/cf/bf/45cfbf33513048d451c8ab0898c0f2a8.jpg,
+        level: 2,points: 0,
+      },
+       {
+        name: "Squats",
+        info: "",
+        calories: 250,
+        image: "https://i.pinimg.com/564x/45/cf/bf/45cfbf33513048d451c8ab0898c0f2a8.jpg,
+        level: 2,points: 0,
+      },
+      {
+        name: "military press",
+        info: "",
+        calories: 250,
+        image: "https://www.inspireusafoundation.org/wp-content/uploads/2022/04/military-press.gif,
+        level: 2,points: 0,
+      },
     ]);
   },
 
