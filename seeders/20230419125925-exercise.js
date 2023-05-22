@@ -27,13 +27,13 @@ module.exports = {
         level: 3,points: 0,
       },
         {
-        name: "Lunges",
+        name: "Dumbell Walking Lunge",
         info: "",
         calories: 250,
         image: "https://i.pinimg.com/564x/45/cf/bf/45cfbf33513048d451c8ab0898c0f2a8.jpg,
         level: 2,points: 0,
       },
-       {
+        {
         name: "Squats",
         info: "",
         calories: 250,
@@ -43,9 +43,9 @@ module.exports = {
       {
         name: "military press",
         info: "",
-        calories: 250,
+        calories: 350,
         image: "https://www.inspireusafoundation.org/wp-content/uploads/2022/04/military-press.gif,
-        level: 2,points: 0,
+        level: 3,points: 0,
       },
     ]);
   },
