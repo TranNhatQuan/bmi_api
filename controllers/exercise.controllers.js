@@ -270,14 +270,14 @@ const putCmtEx = async (req, res) => {
             where: { mail: req.mail },
             include: User
         });
-        console.log(acc)
+        //console.log(acc)
         let user_ex = await User_exercise.findOne({
             where: {
                 idExercise: id_exercise,
                 idUser: acc.User.idUser,
             }
         })
-        console.log(user_ex)
+        //console.log(user_ex)
         if (user_ex === null) {
             console.log('testNull')
             user_ex = await User_exercise.create({
@@ -291,6 +291,7 @@ const putCmtEx = async (req, res) => {
             return res.status(200).json({ iSsuccess: true })
         } else {
             user_ex.cmt = cmt;
+            user_ex.date = moment().format("YYYY-MM-DD HH:mm:ss")
             await user_ex.save()
             return res.status(200).json({ user_ex, iSsuccess: true })
         }
