@@ -34,6 +34,12 @@ module.exports = {
         quantity: 2,
         unitName: "g"
       },
+       {
+        idRecipe: 4,
+        idIngredient: 5,
+        quantity: 2,
+        unitName: "g"
+      },
     ]);
   },
 
