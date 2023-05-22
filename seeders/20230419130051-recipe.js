@@ -26,7 +26,7 @@ module.exports = {
       },
       {
         name: 'Boiled Chicken',
-        info: '',
+        info: 'Tender and juicy chicken cooked in flavorful broth. Versatile and nutritious, ideal for salads, sandwiches, or shredded for various dishes.',
         calories: 400,
         proteins: 40,
         fats: 30,
