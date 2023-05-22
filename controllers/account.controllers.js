@@ -175,17 +175,17 @@ const forgotPassword = async (req, res) => {
                 port: 587,
                 secure: false, // true for 465, false for other ports
                 auth: {
-                    user: "n19dccn107@student.ptithcm.edu.vn", // generated ethereal user
-                    pass: "bqztpfkmmbpzmdxl", // generated ethereal password
+                    user: "trannhatquan.2001@gmail.com", // generated ethereal user
+                    pass: "bseuvtvsghpnrltz", // generated ethereal password
                 },
             });
             // send mail with defined transport object
             await transporter.sendMail({
-                from: "n19dccn107@student.ptithcm.edu.vn", // sender address
+                from: "trannhatquan.2001@gmail.com", // sender address
                 to: `${mail}`, // list of receivers
                 subject: "FORGOT PASSWORD", // Subject line
                 text: "FORGOT PASSWORD", // plain text body
-                html: `Mã xác nhận của bạn là: ${randomID}`, // html body
+                html: `Your OTP: ${randomID}`, // html body
             });
 
             return res.status(200).json({

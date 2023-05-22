@@ -15,11 +15,11 @@ module.exports = {
         allowNull: false,
       },
       weight: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       height: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       calories_in: {

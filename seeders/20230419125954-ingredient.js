@@ -16,7 +16,14 @@ module.exports = {
         name: 'Onion',
         image: 'https://images.unsplash.com/photo-1585849834908-3481231155e8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8b25pb258ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'
       },
-     
+       {
+        name: 'asparagus',
+        image: 'https://cdn.tgdd.vn/Files/2022/07/10/1446365/cach-lam-uc-ga-xao-mang-tay-dam-vi-hap-dan-boi-bo-ca-nha-202207102114416270.jpg'
+      },
+      {
+        name: 'chicken breast',
+        image: 'https://cdn.tgdd.vn/2020/12/content/3-800x500-6.jpg'
+      },
     ]);
   },
 

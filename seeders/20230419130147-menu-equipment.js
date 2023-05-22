@@ -24,6 +24,14 @@ module.exports = {
         idMenu:4,
         idEquipment:1
       },
+       {
+        idMenu:5,
+        idEquipment:3
+      },
+       {
+        idMenu:6,
+        idEquipment:3
+      },
     ]);
   },
 

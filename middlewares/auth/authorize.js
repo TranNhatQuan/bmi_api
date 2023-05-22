@@ -1,18 +1,24 @@
 const { Account } = require("../../models");
 const { QueryTypes } = require("sequelize");
 
-const authorize = (arrType) => async (req, res, next) => {
-    const { mail } = req;
-    const account = await Account.findOne({
-            where:{
+const authorize = (role) => async (req, res, next) => {
+    try {
+        const { mail } = req;
+        const account = await Account.findOne({
+            where: {
                 mail
             }
         })
-        if(arrType.findIndex((ele) => ele === account.role > -1)) {
+        if (account.dataValues.role===role) {
             next();
-    }else {
-        res.status(403).json({message: "Bạn không có quyền sử dụng chức năng này!" });
+            
+        } else {
+           return  res.status(403).json({ message: "Bạn không có quyền sử dụng chức năng này!" });
+        }
+    } catch (error) {
+       return  res.status(500).json({ message: "Sth wrong!" });
     }
+
 };
 
 module.exports = {
