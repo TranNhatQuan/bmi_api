@@ -6,7 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert("Recipes", [
       {
         name: 'Crispy fried chicken',
-        info: '',
+        info: 'Tender, juicy chicken coated in a flavorful, crunchy crust. Perfectly fried to golden perfection. Delicious and satisfying.',
         calories: 300,
         proteins: 20,
         fats: 30,
@@ -16,7 +16,7 @@ module.exports = {
       },
       {
         name: 'Boiled Eggs',
-        info: '',
+        info: 'Simple yet versatile. Soft or hard-boiled, they make a nutritious and protein-rich snack or ingredient for salads and sandwiches.',
         calories: 200,
         proteins: 40,
         fats: 30,
@@ -36,7 +36,7 @@ module.exports = {
       },
       {
         name: 'Sauteed chicken breast',
-        info: '',
+        info: 'Moist and tender chicken simmered in flavorful broth. Versatile and healthy, perfect for salads, sandwiches, or shredding for various recipes.',
         calories: 400,
         proteins: 40,
         fats: 30,
