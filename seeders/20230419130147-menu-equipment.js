@@ -26,11 +26,11 @@ module.exports = {
       },
        {
         idMenu:5,
-        idEquipment:1
+        idEquipment:3
       },
        {
         idMenu:6,
-        idEquipment:1
+        idEquipment:3
       },
     ]);
   },
