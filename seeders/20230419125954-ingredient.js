@@ -20,6 +20,10 @@ module.exports = {
         name: 'asparagus',
         image: 'https://cdn.tgdd.vn/Files/2022/07/10/1446365/cach-lam-uc-ga-xao-mang-tay-dam-vi-hap-dan-boi-bo-ca-nha-202207102114416270.jpg'
       },
+      {
+        name: 'chicken breast',
+        image: 'https://cdn.tgdd.vn/2020/12/content/3-800x500-6.jpg'
+      },
     ]);
   },
 
