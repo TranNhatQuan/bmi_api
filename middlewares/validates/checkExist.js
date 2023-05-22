@@ -4,7 +4,7 @@ const checkExistAccount = (Model) => {
   return async (req, res, next) => {
     try {
       const { mail } = req.body;
-    
+      console.log(mail)
       const account = await Model.findOne({
         where: {
           mail,
