@@ -40,6 +40,18 @@ module.exports = {
         name: 'Celery',
         image: 'https://www.thespruceeats.com/thmb/h5_OYBELY8-WXAbSF2RLJ3evrJg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/what-is-celery-5199268-hero-01-cb9c645dfb614f0a8eef5b0c316ce16d.jpg'
       },
+       {
+        name: 'Salmon',
+        image: 'https://naturallyvietnam.com/wp-content/uploads/2020/05/Norway-Salmon.jpg'
+      },
+      {
+        name: 'Orange',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Oranges_-_whole-halved-segment.jpg/640px-Oranges_-_whole-halved-segment.jpg'
+      },
+      {
+        name: 'Margarine',
+        image: 'https://www.tuongan.com.vn/public/uploads/2019/c%E1%BB%A5m%20b%C6%A1_2.png'
+      },
     ]);
   },
 
