@@ -37,7 +37,7 @@ module.exports = {
       {
         name: 'Sauteed chicken breast',
         info: 'Moist and tender chicken simmered in flavorful broth. Versatile and healthy, perfect for salads, sandwiches, or shredding for various recipes.',
-        calories: 400,
+        calories: 300,
         proteins: 40,
         fats: 30,
         carbo: 10,
@@ -45,9 +45,9 @@ module.exports = {
         image: 'https://img.tastykitchen.vn/resize/764x-/2021/03/27/ga-xao-mang-tay-f24a.jpg',
       },
       {
-        name: 'Boiled Chicken3',
-        info: '',
-        calories: 400,
+        name: 'Stir-fried Bell Pepper Pork',
+        info: 'Savory and tender pork cooked with vibrant bell peppers, creating a deliciously flavorful and colorful dish.',
+        calories: 360,
         proteins: 40,
         fats: 30,
         carbo: 10,
