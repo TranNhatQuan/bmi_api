@@ -24,6 +24,14 @@ module.exports = {
         name: 'chicken breast',
         image: 'https://cdn.tgdd.vn/2020/12/content/3-800x500-6.jpg'
       },
+      {
+        name: 'Pork',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Schweinebauch-2.jpg/220px-Schweinebauch-2.jpg'
+      },
+       {
+        name: 'Bell pepper',
+        image: 'https://www.chilipeppermadness.com/wp-content/uploads/2019/08/Bell-Peppers.jpg'
+      },
     ]);
   },
 
