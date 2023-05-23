@@ -82,6 +82,24 @@ module.exports = {
         quantity: 2,
         unitName: "g"
       },
+      {
+        idRecipe: 7,
+        idIngredient: 10,
+        quantity: 2,
+        unitName: "g"
+      },
+      {
+        idRecipe: 7,
+        idIngredient: 11,
+        quantity: 2,
+        unitName: "g"
+      },
+      {
+        idRecipe: 7,
+        idIngredient: 12,
+        quantity: 2,
+        unitName: "g"
+      },
     ]);
   },
 
