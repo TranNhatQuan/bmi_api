@@ -55,14 +55,14 @@ module.exports = {
         image: 'https://img.tastykitchen.vn/resize/764x-/2021/03/27/thit-heo-xao-ot-chuong-39af.jpg',
       },
       {
-        name: 'Boiled Chicken4',
-        info: '',
+        name: 'Stir-fried beef with celery',
+        info: 'Tender beef strips wok-fried with crunchy celery, creating a delicious combination of flavors and textures. Satisfying and nutritious',
         calories: 400,
         proteins: 40,
         fats: 30,
         carbo: 10,
         idType: 2,points: 0,
-        image: 'https://cdn.tgdd.vn/2021/01/CookProduct/cach-lam-ga-cung4-960x540.jpg',
+        image: 'https://cdn.tgdd.vn/2021/05/CookRecipe/GalleryStep/thanh-pham-68.jpg',
       },
       {
         name: 'Boiled Chicken5',
