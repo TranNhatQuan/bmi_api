@@ -52,7 +52,7 @@ module.exports = {
         fats: 30,
         carbo: 10,
         idType: 2,points: 0,
-        image: 'https://cdn.tgdd.vn/2021/01/CookProduct/cach-lam-ga-cung4-960x540.jpg',
+        image: 'https://img.tastykitchen.vn/resize/764x-/2021/03/27/thit-heo-xao-ot-chuong-39af.jpg',
       },
       {
         name: 'Boiled Chicken4',
