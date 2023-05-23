@@ -65,14 +65,14 @@ module.exports = {
         image: 'https://cdn.tgdd.vn/2021/05/CookRecipe/GalleryStep/thanh-pham-68.jpg',
       },
       {
-        name: 'Boiled Chicken5',
-        info: '',
-        calories: 400,
+        name: 'Salmon with orange sauce',
+        info: 'Succulent salmon fillet cooked to perfection, topped with a tangy and flavorful orange sauce. A delightful blend of citrusy sweetness and savory fish',
+        calories: 300,
         proteins: 40,
         fats: 30,
         carbo: 10,
         idType: 2,points: 0,
-        image: 'https://cdn.tgdd.vn/2021/01/CookProduct/cach-lam-ga-cung4-960x540.jpg',
+        image: 'https://cdn.tgdd.vn/Files/2021/07/30/1371970/cach-lam-mon-ca-hoi-sot-cam-thit-ca-mem-ngot-vi-thom-ngon-202301181439177075.jpg',
       },
       {
         name: 'Boiled Chicken6',
