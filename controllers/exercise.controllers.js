@@ -191,23 +191,31 @@ const userLikeEx = async (req, res) => {
             }
 
             else {
+                if (user_like.isLike == 1) {
+                    return res.status(200).json({ success: true, user_like })
+                }
+                else {
+                    user_like.isLike = 1
+                    ex.points = ex.points + 1
+                    await user_like.save()
+                    await ex.save()
+                    return res.status(200).json({ success: true, user_like })
+                }
 
-
-                user_like.isLike = 1
-                ex.points = ex.points + 1
-                await user_like.save()
-                await ex.save()
-                return res.status(200).json({ success: true, user_like })
             }
 
         }
         else {
-
-            user_like.isLike = 0;
-            ex.points = ex.points - 1
-            await user_like.save();
-            await ex.save();
-            return res.status(200).json({ success: true, user_like });
+            if (user_like.isLike == 1) {
+                user_like.isLike = 0;
+                ex.points = ex.points - 1
+                await user_like.save();
+                await ex.save();
+                return res.status(200).json({ success: true, user_like });
+            }
+            else {
+                return res.status(200).json({ success: true, user_like });
+            }
         }
     } catch (error) {
         res.status(500).json({
